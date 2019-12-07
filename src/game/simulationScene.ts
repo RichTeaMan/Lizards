@@ -1,4 +1,5 @@
 import skyImg from "../assets/sky.jpg";
+import dirtImg from "../assets/dirt.jpg";
 import { TerrainPiece } from "./terrainPiece";
 
 export class SimulationScene {
@@ -24,6 +25,10 @@ export class SimulationScene {
 
     public get background(): string {
         return skyImg;
+    }
+
+    public get foreground(): string {
+        return dirtImg;
     }
 
     public get destructibleTerrain(): TerrainPiece[] {

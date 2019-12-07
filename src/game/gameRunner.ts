@@ -33,6 +33,7 @@ function preload() {
     simulationScene = new SimulationScene();
     const scene = this as Phaser.Scene;
     scene.load.image("background", simulationScene.background);
+    scene.load.image("foreground", simulationScene.foreground);
 }
 
 function create() {
@@ -78,6 +79,13 @@ function render(scene: Phaser.Scene) {
         const renderSquare = element.calculateRenderSquare();
         graphics.fillRect(renderSquare.x, renderSquare.y, renderSquare.width, renderSquare.height);
     });
+
+    const foreground = scene.add.image(0, 0, "foreground");
+
+    foreground.scaleY = (foreground.height * 2) / Number(gameConfig.height);
+    foreground.scaleX = (foreground.width * 2) / Number(gameConfig.width);
+
+    foreground.mask = new Phaser.Display.Masks.GeometryMask(scene, graphics);
 }
 
 /**
