@@ -34,11 +34,13 @@ function preload() {
     scene.load.image("background", `assets/${simulationScene.background}`);
     scene.load.image("foreground", `assets/${simulationScene.foreground}`);
     scene.load.image("lizard", "assets/lizard.png");
+    scene.load.image("bazookaRocket", "assets/bazookaRocket.png");
 }
 
-const sprites: Phaser.Physics.Arcade.Sprite[] = [];
+const terrainSprites: Phaser.Physics.Arcade.Sprite[] = [];
 let lizards: Phaser.Physics.Arcade.Sprite[] = [];
 let selectedLizard: Phaser.Physics.Arcade.Sprite;
+let projectiles: Phaser.Physics.Arcade.Sprite[] = [];
 
 function create() {
 
@@ -71,15 +73,54 @@ function create() {
         sprite.body.bounce.x = 1;
         sprite.body.bounce.y = 1;
 
-        sprites.push(sprite);
+        terrainSprites.push(sprite);
 
-        sprite.setInteractive().addListener('pointerdown', function (pointer, localX, localY, event) {
+        sprite.setInteractive().addListener('pointerdown', (pointer, localX, localY, event) => {
             simulationScene.removeTerrain(terrain);
+        });
+
+        scene.physics.world.on('collide', (body: Phaser.Physics.Impact.Body, other: Phaser.Physics.Impact.Body, axis: string) => {
+
+            body.destroy();
+            other.destroy();
+            
+            console.log(body);
+            console.log(other);
+            console.log(axis);
         });
 
         terrain.onDestroy = (t) => {
             sprite.destroy();
         };
+    });
+
+    scene.input.keyboard.on('keydown', function (event: KeyboardEvent) {
+        if (event.code === 'Space') {
+            const projectile = scene.physics.add.sprite(selectedLizard.x, selectedLizard.y, "bazookaRocket");
+            projectile.body.onCollide = true;
+
+            const velocity = 500;
+
+            const x = scene.input.activePointer.x;
+            const y = scene.input.activePointer.y;
+
+            const xD = x - selectedLizard.x;
+            const yD = y - selectedLizard.y;
+
+            const angle = Math.atan(yD / xD);
+            let xR = velocity * Math.cos(angle);
+            let yR = velocity * Math.sin(angle);
+
+            if (xD < 0) {
+                xR = -xR;
+                yR = -yR;
+            }
+
+            projectile.setVelocityX(xR);
+            projectile.setVelocityY(yR);
+
+            projectiles.push(projectile);
+        }
     });
 
 }
@@ -102,10 +143,13 @@ function update(time: number, delta: number) {
 
     const scene = this as Phaser.Scene;
 
-    sprites.forEach(s => {
+    terrainSprites.forEach(s => {
         lizards.forEach(l => {
-            scene.physics.world.collide(l, s);
             scene.physics.world.collide(s, l);
+        });
+
+        projectiles.forEach(p => {
+            scene.physics.world.collide(s, p);
         });
     });
 
