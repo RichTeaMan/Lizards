@@ -12,14 +12,13 @@ const gameConfig: Phaser.Types.Core.GameConfig = {
     width: 1000,
     height: 1000,
 
-    /*
     physics: {
         default: 'arcade',
         arcade: {
-            debug: true,
+            debug: false,
+            gravity: { y: 200 }
         },
     },
-    */
     scene: {
         preload: preload,
         create: create,
@@ -32,24 +31,57 @@ const gameConfig: Phaser.Types.Core.GameConfig = {
 function preload() {
     simulationScene = new SimulationScene();
     const scene = this as Phaser.Scene;
-    scene.load.image("background", simulationScene.background);
-    scene.load.image("foreground", simulationScene.foreground);
+    scene.load.image("background", `assets/${simulationScene.background}`);
+    scene.load.image("foreground", `assets/${simulationScene.foreground}`);
+    scene.load.image("lizard", "assets/lizard.png");
 }
+
+const sprites: Phaser.Physics.Arcade.Sprite[] = [];
+let lizards: Phaser.Physics.Arcade.Sprite[] = [];
+let selectedLizard: Phaser.Physics.Arcade.Sprite;
 
 function create() {
 
-    render(this as Phaser.Scene);
+    const scene = this as Phaser.Scene;
+    render(scene);
 
-    //graphics.fillRect(0, 0, 1000, 1000);
+    lizards.push(scene.physics.add.sprite(100, 200, "lizard"));
+    lizards.push(scene.physics.add.sprite(200, 400, "lizard"));
+    lizards.push(scene.physics.add.sprite(325, 350, "lizard"));
+    lizards.push(scene.physics.add.sprite(465, 100, "lizard"));
+    lizards.push(scene.physics.add.sprite(700, 320, "lizard"));
 
-    /*scene.tweens.add({
-        targets: logo,
-        y: 450,
-        duration: 2000,
-        ease: "Power2",
-        yoyo: true,
-        loop: -1
-    });*/
+    lizards.forEach(l => {
+        l.scale = 0.1;
+        l.setBounce(0.1).setCollideWorldBounds(true);
+    });
+    selectedLizard = lizards[0];
+
+    simulationScene.destructibleTerrain.forEach(terrain => {
+        const sq = terrain.calculateRenderSquare();
+        const sprite = scene.physics.add.sprite(sq.x, sq.y, "foreground");
+        sprite.debugShowBody = true;
+        sprite.width = sq.width;
+        sprite.height = sq.height;
+        sprite.body.immovable = true;
+        (sprite.body as any).allowGravity = false;
+
+        sprite.body.velocity.x = 0;
+        sprite.body.velocity.y = 0;
+        sprite.body.bounce.x = 1;
+        sprite.body.bounce.y = 1;
+
+        sprites.push(sprite);
+
+        sprite.setInteractive().addListener('pointerdown', function (pointer, localX, localY, event) {
+            simulationScene.removeTerrain(terrain);
+        });
+
+        terrain.onDestroy = (t) => {
+            sprite.destroy();
+        };
+    });
+
 }
 
 function render(scene: Phaser.Scene) {
@@ -58,34 +90,6 @@ function render(scene: Phaser.Scene) {
 
     logo.scaleY = (logo.height * 2) / Number(gameConfig.height);
     logo.scaleX = (logo.width * 2) / Number(gameConfig.width);
-
-    var graphics = scene.add.graphics();
-    graphics.setDefaultStyles({
-        lineStyle: {
-            width: 1,
-            color: 0xffffff,
-            alpha: 1
-        },
-        fillStyle: {
-            color: 0xffffff,
-            alpha: 1
-        }
-    });
-    //graphics.clear();
-
-
-
-    simulationScene.destructibleTerrain.forEach(element => {
-        const renderSquare = element.calculateRenderSquare();
-        graphics.fillRect(renderSquare.x, renderSquare.y, renderSquare.width, renderSquare.height);
-    });
-
-    const foreground = scene.add.image(0, 0, "foreground");
-
-    foreground.scaleY = (foreground.height * 2) / Number(gameConfig.height);
-    foreground.scaleX = (foreground.width * 2) / Number(gameConfig.width);
-
-    foreground.mask = new Phaser.Display.Masks.GeometryMask(scene, graphics);
 }
 
 /**
@@ -98,29 +102,26 @@ function update(time: number, delta: number) {
 
     const scene = this as Phaser.Scene;
 
-    if (scene.game.input.activePointer.isDown) {
-        console.log(`${scene.game.input.activePointer.x}, ${scene.game.input.activePointer.y}`);
-
-        // resolve tile
-        const removedTerrain = simulationScene.removeTerrain(
-            scene.game.input.activePointer.x / simulationScene.terrainPieceSize,
-            scene.game.input.activePointer.y / simulationScene.terrainPieceSize);
-        if (removedTerrain) {
-            console.log("Removed");
-
-            render(scene);
-        }
-        else {
-            console.log("Nothing");
-        }
-        console.log(simulationScene.destructibleTerrain.length);
-
-    }
-
-    simulationScene.destructibleTerrain.forEach(element => {
-        //graphics.strokeRect(element.x, element.y, simulationScene.terrainPieceSize, simulationScene.terrainPieceSize);
+    sprites.forEach(s => {
+        lizards.forEach(l => {
+            scene.physics.world.collide(l, s);
+            scene.physics.world.collide(s, l);
+        });
     });
 
+    const cursors = scene.input.keyboard.createCursorKeys();
+    if (cursors.left.isDown) {
+        selectedLizard.setVelocityX(-160);
+    }
+    else if (cursors.right.isDown) {
+        selectedLizard.setVelocityX(160);
+    }
+    else {
+        selectedLizard.setVelocityX(0);
+    }
+    if (cursors.up.isDown && selectedLizard.body.touching.down) {
+        selectedLizard.setVelocityY(-120);
+    }
 }
 
 const sceneConfig: Phaser.Types.Scenes.SettingsConfig = {
@@ -139,7 +140,6 @@ export class GameScene extends Phaser.Scene {
     public update() {
         // TODO
     }
-
 }
 
 export function setupGame(): Phaser.Game {

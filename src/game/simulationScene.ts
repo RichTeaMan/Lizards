@@ -1,5 +1,3 @@
-import skyImg from "../assets/sky.jpg";
-import dirtImg from "../assets/dirt.jpg";
 import { TerrainPiece } from "./terrainPiece";
 
 export class SimulationScene {
@@ -24,11 +22,15 @@ export class SimulationScene {
     }
 
     public get background(): string {
-        return skyImg;
+        return "sky.jpg";
     }
 
     public get foreground(): string {
-        return dirtImg;
+        return "smallDirt.png";
+    }
+
+    public get lizard(): string {
+        return "lizard.png";
     }
 
     public get destructibleTerrain(): TerrainPiece[] {
@@ -48,12 +50,19 @@ export class SimulationScene {
         return result;
     }
 
-    public removeTerrain(x: number, y:number): TerrainPiece {
+    public removeTerrainFromCoordinates(x: number, y :number): TerrainPiece {
         const terrain = this.fetchTerrain(x, y);
-        if (terrain) {
-            this._destructibleTerrain = this._destructibleTerrain.filter(t => t !== terrain);
+        return this.removeTerrain(terrain);
+    }
+
+    public removeTerrain(terrainPiece: TerrainPiece): TerrainPiece {
+        if (terrainPiece) {
+            if (terrainPiece.onDestroy) {
+                terrainPiece.onDestroy(terrainPiece);
+            }
+            this._destructibleTerrain = this._destructibleTerrain.filter(t => t !== terrainPiece);
         }
-        return terrain;
+        return terrainPiece;
     }
 
 }

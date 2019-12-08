@@ -7,6 +7,8 @@ export class TerrainPiece {
     readonly x: number;
     readonly y: number;
 
+    onDestroy: (terrainPiece: TerrainPiece) => void;
+
     constructor(parentScene: SimulationScene, x: number, y: number) {
         this.parentScene = parentScene;
         this.x = x;
