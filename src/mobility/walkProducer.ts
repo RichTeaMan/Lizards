@@ -15,15 +15,15 @@ export class WalkProducer implements Producer<MobilityPayload> {
 
         const payload = new MobilityPayload();
         // TODO: something better.
-        payload.lizardId = 0;
+        // payload.lizardId = 0;
         if (cursors.left.isDown) {
-            payload.velocityX = -160;
+            payload.left = true;
         }
         else if (cursors.right.isDown) {
-            payload.velocityX = 160;
+            payload.right = true;
         }
-        if (cursors.up.isDown && simulationScene.selectedLizard.body.touching.down) {
-            payload.velocityY = -120;
+        if (cursors.up.isDown) {
+            payload.jump = true;
         }
 
         return payload;

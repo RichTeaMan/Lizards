@@ -36,9 +36,9 @@ export class MessageBus {
                 }
             }
             catch (error) {
-                console.log(`Unable to process producer: ${error}`);
+                console.log(`Unable to process producer: ${error}.`);
             }
-        })
+        });
 
         return this;
     }
