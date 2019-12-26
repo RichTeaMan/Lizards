@@ -1,7 +1,11 @@
 import * as Phaser from 'phaser';
 import { SimulationScene } from './simulationScene';
+import { MessageBus } from '../messageBus/messageBus';
+import { WalkProducer } from '../mobility/walkProducer';
+import { WalkConsumer } from '../mobility/walkConsumer';
 
 let simulationScene: SimulationScene;
+let messageBus: MessageBus;
 
 const gameConfig: Phaser.Types.Core.GameConfig = {
     title: 'Sample',
@@ -30,6 +34,9 @@ const gameConfig: Phaser.Types.Core.GameConfig = {
 
 function preload() {
     simulationScene = new SimulationScene();
+    messageBus = new MessageBus();
+    messageBus.registerProducer(new WalkProducer());
+    messageBus.registerConsumer(new WalkConsumer());
     const scene = this as Phaser.Scene;
     scene.load.image("background", `assets/${simulationScene.background}`);
     scene.load.image("foreground", `assets/${simulationScene.foreground}`);
@@ -37,27 +44,22 @@ function preload() {
     scene.load.image("bazookaRocket", "assets/bazookaRocket.png");
 }
 
-const terrainSprites: Phaser.Physics.Arcade.Sprite[] = [];
-let lizards: Phaser.Physics.Arcade.Sprite[] = [];
-let selectedLizard: Phaser.Physics.Arcade.Sprite;
-let projectiles: Phaser.Physics.Arcade.Sprite[] = [];
-
 function create() {
 
     const scene = this as Phaser.Scene;
     render(scene);
 
-    lizards.push(scene.physics.add.sprite(100, 200, "lizard"));
-    lizards.push(scene.physics.add.sprite(200, 400, "lizard"));
-    lizards.push(scene.physics.add.sprite(325, 350, "lizard"));
-    lizards.push(scene.physics.add.sprite(465, 100, "lizard"));
-    lizards.push(scene.physics.add.sprite(700, 320, "lizard"));
+    simulationScene.lizards.push(scene.physics.add.sprite(100, 200, "lizard"));
+    simulationScene.lizards.push(scene.physics.add.sprite(200, 400, "lizard"));
+    simulationScene.lizards.push(scene.physics.add.sprite(325, 350, "lizard"));
+    simulationScene.lizards.push(scene.physics.add.sprite(465, 100, "lizard"));
+    simulationScene.lizards.push(scene.physics.add.sprite(700, 320, "lizard"));
 
-    lizards.forEach(l => {
+    simulationScene.lizards.forEach(l => {
         l.scale = 0.1;
         l.setBounce(0.1).setCollideWorldBounds(true);
     });
-    selectedLizard = lizards[0];
+    simulationScene.selectedLizard = simulationScene.lizards[0];
 
     simulationScene.destructibleTerrain.forEach(terrain => {
         const sq = terrain.calculateRenderSquare();
@@ -73,7 +75,7 @@ function create() {
         sprite.body.bounce.x = 1;
         sprite.body.bounce.y = 1;
 
-        terrainSprites.push(sprite);
+        simulationScene.terrainSprites.push(sprite);
 
         sprite.setInteractive().addListener('pointerdown', (pointer, localX, localY, event) => {
             simulationScene.removeTerrain(terrain);
@@ -95,32 +97,7 @@ function create() {
     });
 
     scene.input.keyboard.on('keydown', function (event: KeyboardEvent) {
-        if (event.code === 'Space') {
-            const projectile = scene.physics.add.sprite(selectedLizard.x, selectedLizard.y, "bazookaRocket");
-            projectile.body.onCollide = true;
 
-            const velocity = 500;
-
-            const x = scene.input.activePointer.x;
-            const y = scene.input.activePointer.y;
-
-            const xD = x - selectedLizard.x;
-            const yD = y - selectedLizard.y;
-
-            const angle = Math.atan(yD / xD);
-            let xR = velocity * Math.cos(angle);
-            let yR = velocity * Math.sin(angle);
-
-            if (xD < 0) {
-                xR = -xR;
-                yR = -yR;
-            }
-
-            projectile.setVelocityX(xR);
-            projectile.setVelocityY(yR);
-
-            projectiles.push(projectile);
-        }
     });
 
 }
@@ -143,29 +120,20 @@ function update(time: number, delta: number) {
 
     const scene = this as Phaser.Scene;
 
-    terrainSprites.forEach(s => {
-        lizards.forEach(l => {
+    simulationScene.terrainSprites.forEach(s => {
+        simulationScene.lizards.forEach(l => {
             scene.physics.world.collide(s, l);
         });
 
-        projectiles.forEach(p => {
+        simulationScene.projectiles.forEach(p => {
             scene.physics.world.collide(s, p);
         });
     });
 
     const cursors = scene.input.keyboard.createCursorKeys();
-    if (cursors.left.isDown) {
-        selectedLizard.setVelocityX(-160);
-    }
-    else if (cursors.right.isDown) {
-        selectedLizard.setVelocityX(160);
-    }
-    else {
-        selectedLizard.setVelocityX(0);
-    }
-    if (cursors.up.isDown && selectedLizard.body.touching.down) {
-        selectedLizard.setVelocityY(-120);
-    }
+
+    messageBus.processProducers(simulationScene, null, cursors);
+    messageBus.processConsumers(simulationScene);
 }
 
 const sceneConfig: Phaser.Types.Scenes.SettingsConfig = {

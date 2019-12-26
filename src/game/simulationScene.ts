@@ -7,11 +7,16 @@ export class SimulationScene {
     private _destructibleTerrain: TerrainPiece[];
     readonly terrainPieceSize = 10;
 
+    readonly terrainSprites: Phaser.Physics.Arcade.Sprite[] = [];
+    lizards: Phaser.Physics.Arcade.Sprite[] = [];
+    selectedLizard: Phaser.Physics.Arcade.Sprite;
+    projectiles: Phaser.Physics.Arcade.Sprite[] = [];
+
     constructor() {
         this._destructibleTerrain = [];
         for (let i = 0; i < this._width; i++) {
 
-            for (let j = this._height / 2; j < this._height; j ++) {
+            for (let j = this._height / 2; j < this._height; j++) {
                 this._destructibleTerrain.push(new TerrainPiece(this, i, j));
             }
         }
@@ -50,7 +55,7 @@ export class SimulationScene {
         return result;
     }
 
-    public removeTerrainFromCoordinates(x: number, y :number): TerrainPiece {
+    public removeTerrainFromCoordinates(x: number, y: number): TerrainPiece {
         const terrain = this.fetchTerrain(x, y);
         return this.removeTerrain(terrain);
     }
