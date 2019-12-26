@@ -1,14 +1,17 @@
 import { Producer } from "../messageBus/producer";
-import { Message } from "../messageBus/message";
 import { SimulationScene } from "../game/simulationScene";
 import { MobilityPayload } from "./mobilityPayload";
 
 export class WalkProducer implements Producer<MobilityPayload> {
 
+    fetchMessageType(): string {
+        return "walk";
+    }
+
     produce(
         simulationScene: SimulationScene,
         event: KeyboardEvent,
-        cursors: Phaser.Types.Input.Keyboard.CursorKeys): void | Message<MobilityPayload> {
+        cursors: Phaser.Types.Input.Keyboard.CursorKeys): MobilityPayload {
 
         const payload = new MobilityPayload();
         // TODO: something better.
@@ -23,8 +26,6 @@ export class WalkProducer implements Producer<MobilityPayload> {
             payload.velocityY = -120;
         }
 
-        const message = new Message<MobilityPayload>();
-        message.message = payload;
-        return message;
+        return payload;
     }
 }

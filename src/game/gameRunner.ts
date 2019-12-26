@@ -85,7 +85,7 @@ function create() {
 
             body.destroy();
             other.destroy();
-            
+
             console.log(body);
             console.log(other);
             console.log(axis);

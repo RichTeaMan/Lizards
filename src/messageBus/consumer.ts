@@ -1,9 +1,10 @@
 import { SimulationScene } from "../game/simulationScene";
-import { Message } from "./message";
 
 export interface Consumer<T> {
 
+    fetchMessageType(): string;
+
     consume(
         simulationScene: SimulationScene,
-        message: Message<T>): void;
+        payload: T): void;
 }

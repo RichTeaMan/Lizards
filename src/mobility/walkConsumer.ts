@@ -1,16 +1,19 @@
-import { Message } from "../messageBus/message";
 import { SimulationScene } from "../game/simulationScene";
 import { Consumer } from "../messageBus/consumer";
 import { MobilityPayload } from "./mobilityPayload";
 
 export class WalkConsumer implements Consumer<MobilityPayload> {
+    
+    fetchMessageType(): string {
+        return "walk";
+    }
 
     consume(
         simulationScene: SimulationScene,
-        message: Message<MobilityPayload>): void {
+        payload: MobilityPayload): void {
 
-        simulationScene.selectedLizard.setVelocityX(message.message.velocityX);
-        simulationScene.selectedLizard.setVelocityY(message.message.velocityY);
+        simulationScene.selectedLizard.setVelocityX(payload.velocityX);
+        simulationScene.selectedLizard.setVelocityY(payload.velocityY);
     }
 
 }

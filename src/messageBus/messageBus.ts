@@ -6,7 +6,7 @@ import { Consumer } from "./consumer";
 export class MessageBus {
 
     private producers: Array<Producer<unknown>> = [];
-    private consumers: Array<Consumer<unknown>> = [];
+    private consumers: Record<string, Consumer<unknown>> = {};
     private messages: Array<Message<unknown>> = [];
 
     registerProducer(producer: Producer<unknown>): MessageBus {
@@ -17,7 +17,7 @@ export class MessageBus {
 
     registerConsumer(consumer: Consumer<unknown>): MessageBus {
 
-        this.consumers.push(consumer);
+        this.consumers[consumer.fetchMessageType()] = consumer;
         return this;
     }
 
@@ -28,8 +28,10 @@ export class MessageBus {
 
         this.producers.forEach(producer => {
             try {
-                const message = producer.produce(simulationScene, keyboardEvent, cursors);
-                if (message) {
+                const payload = producer.produce(simulationScene, keyboardEvent, cursors);
+                if (payload) {
+                    const messageType = producer.fetchMessageType();
+                    const message = new Message(messageType, payload);
                     this.messages.push(message);
                 }
             }
@@ -46,10 +48,8 @@ export class MessageBus {
         this.messages.forEach(message => {
 
             if (message) {
-                // TODO: consumer determination.
-                this.consumers.forEach(consumer => {
-                    consumer.consume(simulationScene, message);
-                });
+                const consumer = this.consumers[message.messageType];
+                consumer.consume(simulationScene, message.payload);
             }
         });
         this.messages = [];
