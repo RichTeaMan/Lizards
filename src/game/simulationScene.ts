@@ -6,14 +6,17 @@ export class SimulationScene {
     private _width = 100;
     private _destructibleTerrain: TerrainPiece[];
     readonly terrainPieceSize = 10;
+    readonly scene: Phaser.Scene;
 
     readonly terrainSprites: Phaser.Physics.Arcade.Sprite[] = [];
     lizards: Phaser.Physics.Arcade.Sprite[] = [];
     selectedLizard: Phaser.Physics.Arcade.Sprite;
     projectiles: Phaser.Physics.Arcade.Sprite[] = [];
 
-    constructor() {
+    constructor(scene: Phaser.Scene) {
         this._destructibleTerrain = [];
+        this.scene = scene;
+
         for (let i = 0; i < this._width; i++) {
 
             for (let j = this._height / 2; j < this._height; j++) {

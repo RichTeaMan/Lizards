@@ -1,4 +1,6 @@
 import { SimulationScene } from "../game/simulationScene";
+import { KeyEvent } from "./KeyEvent";
+import { PointerState } from "./PointerState";
 
 export interface Producer<T> {
 
@@ -6,6 +8,7 @@ export interface Producer<T> {
 
     produce(
         simulationScene: SimulationScene,
-        event: KeyboardEvent,
-        cursors: Phaser.Types.Input.Keyboard.CursorKeys): T;
+        keyEvents: KeyEvent[],
+        cursors: Phaser.Types.Input.Keyboard.CursorKeys,
+        pointerState: PointerState): T;
 }

@@ -3,9 +3,14 @@ import { SimulationScene } from './simulationScene';
 import { MessageBus } from '../messageBus/messageBus';
 import { WalkProducer } from '../mobility/walkProducer';
 import { WalkConsumer } from '../mobility/walkConsumer';
+import { KeyEvent, State } from '../messageBus/KeyEvent';
+import { PointerState } from '../messageBus/PointerState';
+import { BazookaConsumer } from '../weapons/BazookaConsumer';
+import { BazookaProducer } from '../weapons/BazookaProducer';
 
 let simulationScene: SimulationScene;
 let messageBus: MessageBus;
+let keyEvents: KeyEvent[] = [];
 
 const gameConfig: Phaser.Types.Core.GameConfig = {
     title: 'Sample',
@@ -33,11 +38,14 @@ const gameConfig: Phaser.Types.Core.GameConfig = {
 };
 
 function preload() {
-    simulationScene = new SimulationScene();
+    
     messageBus = new MessageBus();
     messageBus.registerProducer(new WalkProducer());
+    messageBus.registerProducer(new BazookaProducer());
     messageBus.registerConsumer(new WalkConsumer());
+    messageBus.registerConsumer(new BazookaConsumer());
     const scene = this as Phaser.Scene;
+    simulationScene = new SimulationScene(scene);
     scene.load.image("background", `assets/${simulationScene.background}`);
     scene.load.image("foreground", `assets/${simulationScene.foreground}`);
     scene.load.image("lizard", "assets/lizard.png");
@@ -85,10 +93,6 @@ function create() {
 
             body.destroy();
             other.destroy();
-
-            console.log(body);
-            console.log(other);
-            console.log(axis);
         });
 
         terrain.onDestroy = (t) => {
@@ -97,7 +101,10 @@ function create() {
     });
 
     scene.input.keyboard.on('keydown', function (event: KeyboardEvent) {
-
+        keyEvents.push(new KeyEvent(event.code, State.DOWN, event.ctrlKey, event.shiftKey));
+    });
+    scene.input.keyboard.on('keyup', function (event: KeyboardEvent) {
+        keyEvents.push(new KeyEvent(event.code, State.UP, event.ctrlKey, event.shiftKey))
     });
 
 }
@@ -132,8 +139,14 @@ function update(time: number, delta: number) {
 
     const cursors = scene.input.keyboard.createCursorKeys();
 
-    messageBus.processProducers(simulationScene, null, cursors);
+    const x = scene.input.activePointer.x;
+    const y = scene.input.activePointer.y;
+    const pointerState = new PointerState(x, y);
+
+    messageBus.processProducers(simulationScene, keyEvents, cursors, pointerState);
     messageBus.processConsumers(simulationScene);
+
+    keyEvents = [];
 }
 
 const sceneConfig: Phaser.Types.Scenes.SettingsConfig = {

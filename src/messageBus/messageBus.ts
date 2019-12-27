@@ -2,6 +2,8 @@ import { Producer } from "./producer";
 import { SimulationScene } from "../game/simulationScene";
 import { Message } from "./message";
 import { Consumer } from "./consumer";
+import { KeyEvent } from "./KeyEvent";
+import { PointerState } from "./PointerState";
 
 export class MessageBus {
 
@@ -23,12 +25,13 @@ export class MessageBus {
 
     processProducers(
         simulationScene: SimulationScene,
-        keyboardEvent: KeyboardEvent,
-        cursors: Phaser.Types.Input.Keyboard.CursorKeys): MessageBus {
+        keyEvents: KeyEvent[],
+        cursors: Phaser.Types.Input.Keyboard.CursorKeys,
+        pointerState: PointerState): MessageBus {
 
         this.producers.forEach(producer => {
             try {
-                const payload = producer.produce(simulationScene, keyboardEvent, cursors);
+                const payload = producer.produce(simulationScene, keyEvents, cursors, pointerState);
                 if (payload) {
                     const messageType = producer.fetchMessageType();
                     const message = new Message(messageType, payload);
