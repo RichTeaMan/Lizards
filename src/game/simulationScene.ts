@@ -1,4 +1,5 @@
 import { TerrainPiece } from "./terrainPiece";
+import { Combatant } from "../Combatant";
 
 export class SimulationScene {
 
@@ -9,7 +10,7 @@ export class SimulationScene {
     readonly scene: Phaser.Scene;
 
     readonly terrainSprites: Phaser.Physics.Arcade.Sprite[] = [];
-    lizards: Phaser.Physics.Arcade.Sprite[] = [];
+    lizards: Combatant[] = [];
     selectedLizard: Phaser.Physics.Arcade.Sprite;
     projectiles: Phaser.Physics.Arcade.Sprite[] = [];
 
@@ -23,6 +24,21 @@ export class SimulationScene {
                 this._destructibleTerrain.push(new TerrainPiece(this, i, j));
             }
         }
+    }
+
+    public fetchCombatant(impactBody: Phaser.Physics.Impact.Body) {
+
+        let lizard: Combatant = null;
+        const body = (impactBody as any).body;
+        if (body) {
+            const gameObject = body.gameObject;
+            this.lizards.forEach(l => {
+                if ((l.sprite as any) === gameObject) {
+                    lizard = l;
+                }
+            });
+        }
+        return lizard;
     }
 
     public update() {

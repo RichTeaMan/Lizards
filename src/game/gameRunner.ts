@@ -7,6 +7,7 @@ import { KeyEvent, State } from '../messageBus/KeyEvent';
 import { PointerState } from '../messageBus/PointerState';
 import { BazookaConsumer } from '../weapons/BazookaConsumer';
 import { BazookaProducer } from '../weapons/BazookaProducer';
+import { Combatant } from '../Combatant';
 
 let simulationScene: SimulationScene;
 let messageBus: MessageBus;
@@ -57,17 +58,17 @@ function create() {
     const scene = this as Phaser.Scene;
     render(scene);
 
-    simulationScene.lizards.push(scene.physics.add.sprite(100, 200, "lizard"));
-    simulationScene.lizards.push(scene.physics.add.sprite(200, 400, "lizard"));
-    simulationScene.lizards.push(scene.physics.add.sprite(325, 350, "lizard"));
-    simulationScene.lizards.push(scene.physics.add.sprite(465, 100, "lizard"));
-    simulationScene.lizards.push(scene.physics.add.sprite(700, 320, "lizard"));
+    simulationScene.lizards.push(new Combatant(scene.physics.add.sprite(100, 200, "lizard")));
+    simulationScene.lizards.push(new Combatant(scene.physics.add.sprite(200, 400, "lizard")));
+    simulationScene.lizards.push(new Combatant(scene.physics.add.sprite(325, 350, "lizard")));
+    simulationScene.lizards.push(new Combatant(scene.physics.add.sprite(465, 100, "lizard")));
+    simulationScene.lizards.push(new Combatant(scene.physics.add.sprite(700, 320, "lizard")));
 
     simulationScene.lizards.forEach(l => {
-        l.scale = 0.1;
-        l.setBounce(0.1).setCollideWorldBounds(true);
+        l.sprite.scale = 0.1;
+        l.sprite.setBounce(0.1).setCollideWorldBounds(true);
     });
-    simulationScene.selectedLizard = simulationScene.lizards[0];
+    simulationScene.selectedLizard = simulationScene.lizards[0].sprite;
 
     simulationScene.destructibleTerrain.forEach(terrain => {
         const sq = terrain.calculateRenderSquare();
@@ -91,8 +92,17 @@ function create() {
 
         scene.physics.world.on('collide', (body: Phaser.Physics.Impact.Body, other: Phaser.Physics.Impact.Body, axis: string) => {
 
-            body.destroy();
-            other.destroy();
+            //body.destroy();
+            //other.destroy();
+
+            const l1 = simulationScene.fetchCombatant(body);
+            const l2 = simulationScene.fetchCombatant(other);
+
+            if (l1 || l2) {
+                body.destroy();
+                other.destroy();
+            }
+            
         });
 
         terrain.onDestroy = (t) => {
@@ -129,11 +139,17 @@ function update(time: number, delta: number) {
 
     simulationScene.terrainSprites.forEach(s => {
         simulationScene.lizards.forEach(l => {
-            scene.physics.world.collide(s, l);
+            scene.physics.world.collide(s, l.sprite);
         });
 
         simulationScene.projectiles.forEach(p => {
             scene.physics.world.collide(s, p);
+        });
+    });
+
+    simulationScene.lizards.forEach(l => {
+        simulationScene.projectiles.forEach(p => {
+            scene.physics.world.collide(l.sprite, p);
         });
     });
 
