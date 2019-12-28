@@ -39,7 +39,7 @@ const gameConfig: Phaser.Types.Core.GameConfig = {
 };
 
 function preload() {
-    
+
     messageBus = new MessageBus();
     messageBus.registerProducer(new WalkProducer());
     messageBus.registerProducer(new BazookaProducer());
@@ -58,11 +58,11 @@ function create() {
     const scene = this as Phaser.Scene;
     render(scene);
 
-    simulationScene.lizards.push(new Combatant(scene.physics.add.sprite(100, 200, "lizard")));
-    simulationScene.lizards.push(new Combatant(scene.physics.add.sprite(200, 400, "lizard")));
-    simulationScene.lizards.push(new Combatant(scene.physics.add.sprite(325, 350, "lizard")));
-    simulationScene.lizards.push(new Combatant(scene.physics.add.sprite(465, 100, "lizard")));
-    simulationScene.lizards.push(new Combatant(scene.physics.add.sprite(700, 320, "lizard")));
+    simulationScene.lizards.push(new Combatant().initialise(scene, 100, 200));
+    simulationScene.lizards.push(new Combatant().initialise(scene, 200, 400));
+    simulationScene.lizards.push(new Combatant().initialise(scene, 325, 350));
+    simulationScene.lizards.push(new Combatant().initialise(scene, 465, 100));
+    simulationScene.lizards.push(new Combatant().initialise(scene, 700, 320));
 
     simulationScene.lizards.forEach(l => {
         l.sprite.scale = 0.1;
@@ -102,7 +102,7 @@ function create() {
                 body.destroy();
                 other.destroy();
             }
-            
+
         });
 
         terrain.onDestroy = (t) => {
@@ -163,6 +163,11 @@ function update(time: number, delta: number) {
     messageBus.processConsumers(simulationScene);
 
     keyEvents = [];
+
+
+    simulationScene.lizards.forEach(l => {
+        l.update(scene);
+    });
 }
 
 const sceneConfig: Phaser.Types.Scenes.SettingsConfig = {
