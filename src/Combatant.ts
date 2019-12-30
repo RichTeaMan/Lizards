@@ -44,6 +44,20 @@ export class Combatant {
         return this;
     }
 
+    /**
+     * Deals the given amount of damage.
+     * @param damage 
+     */
+    damage(damage: number): Combatant {
+
+        // TODO: what if dead?
+        this.health += -damage;
+
+        this.healthText.text = this.health.toString();
+
+        return this;
+    }
+
     getX(): number {
         return this.sprite.x;
     }

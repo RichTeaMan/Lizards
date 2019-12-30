@@ -50,6 +50,7 @@ function preload() {
     scene.load.image("background", `assets/${simulationScene.background}`);
     scene.load.image("foreground", `assets/${simulationScene.foreground}`);
     scene.load.image("lizard", "assets/lizard.png");
+    scene.load.image("smoke", "assets/white-smoke.png");
     scene.load.image("bazookaRocket", "assets/bazookaRocket.png");
 }
 
@@ -92,15 +93,19 @@ function create() {
 
         scene.physics.world.on('collide', (body: Phaser.Physics.Impact.Body, other: Phaser.Physics.Impact.Body, axis: string) => {
 
-            //body.destroy();
-            //other.destroy();
+            const p1 = simulationScene.fetchProjectile(body);
+            const p2 = simulationScene.fetchProjectile(other);
+            const projectile = p1 ? p1 : p2;
 
-            const l1 = simulationScene.fetchCombatant(body);
-            const l2 = simulationScene.fetchCombatant(other);
+            if (projectile) {
 
-            if (l1 || l2) {
-                body.destroy();
-                other.destroy();
+                const l1 = simulationScene.fetchCombatant(body);
+                const l2 = simulationScene.fetchCombatant(other);
+                const combatant = l1 ? l1 : l2;
+
+                if (combatant) {
+                    projectile.onCombatantCollision(combatant);
+                }
             }
 
         });
@@ -143,13 +148,13 @@ function update(time: number, delta: number) {
         });
 
         simulationScene.projectiles.forEach(p => {
-            scene.physics.world.collide(s, p);
+            scene.physics.world.collide(s, p.sprite);
         });
     });
 
     simulationScene.lizards.forEach(l => {
         simulationScene.projectiles.forEach(p => {
-            scene.physics.world.collide(l.sprite, p);
+            scene.physics.world.collide(l.sprite, p.sprite);
         });
     });
 
@@ -168,6 +173,12 @@ function update(time: number, delta: number) {
     simulationScene.lizards.forEach(l => {
         l.update(scene);
     });
+
+    simulationScene.projectiles.forEach(p => {
+        p.update(scene);
+    })
+
+    simulationScene.projectiles = simulationScene.projectiles.filter(p => !p.exploded);
 }
 
 const sceneConfig: Phaser.Types.Scenes.SettingsConfig = {
