@@ -1,0 +1,20 @@
+pipeline {
+    agent { label "linux" }
+    stages {
+        stage('Build image') { 
+            steps {
+                sh "sudo docker build -t richteaman/lizards ."
+            }
+        }
+        stage('Remove old container') { 
+            steps {
+                sh (script: "sudo docker rm --force lizards", returnStatus: true)
+            }
+        }
+        stage('Build run container') { 
+            steps {
+                sh "sudo docker run -d -p 8091:80 --name lizards --restart unless-stopped richteaman/lizards"
+            }
+        }
+    }
+}
