@@ -26,7 +26,7 @@ export class Combatant {
     }
 
     initialise(scene: Phaser.Scene, x: number, y: number): Combatant {
-        this.sprite = scene.physics.add.sprite(x, y, "lizard");
+        this.sprite = scene.physics.add.sprite(x, y, "lizard").setDragX(100);
         this.nameText = scene.add.text(x + this.nameTextOffsetX, y + this.nameTextOffsetY, this.name);
         this.healthText = scene.add.text(x + this.healthTextOffsetX, y + this.healthTextOffsetY, this.health.toString());
 
