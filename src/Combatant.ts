@@ -14,6 +14,12 @@ export class Combatant {
     name: string;
     health: number = 100;
     nameText: Phaser.GameObjects.Text;
+    nameTextOffsetX: number = -10;
+    nameTextOffsetY: number = -55;
+    healthText: Phaser.GameObjects.Text;
+    healthTextOffsetX: number = -10;
+    healthTextOffsetY: number = -40;
+
 
     constructor() {
         this.name = Combatant.names[Math.floor(Math.random() * Combatant.names.length)];
@@ -21,15 +27,20 @@ export class Combatant {
 
     initialise(scene: Phaser.Scene, x: number, y: number): Combatant {
         this.sprite = scene.physics.add.sprite(x, y, "lizard");
-        this.nameText = scene.add.text(x, y, this.name);
+        this.nameText = scene.add.text(x + this.nameTextOffsetX, y + this.nameTextOffsetY, this.name);
+        this.healthText = scene.add.text(x + this.healthTextOffsetX, y + this.healthTextOffsetY, this.health.toString());
 
         return this;
     }
 
     update(scene: Phaser.Scene): Combatant {
 
-        this.nameText.x = this.getX();
-        this.nameText.y = this.getY();
+        this.nameText.x = this.getX() + this.nameTextOffsetX;
+        this.nameText.y = this.getY() + this.nameTextOffsetY;
+
+        this.healthText.x = this.getX() + this.healthTextOffsetX;
+        this.healthText.y = this.getY() + this.healthTextOffsetY;
+
         return this;
     }
 
