@@ -64,14 +64,14 @@ export class Explosion {
         });
 
         simulationScene.destructibleTerrain.forEach(dt => {
-            const distance = Phaser.Math.Distance.Between(originPoint.x, originPoint.y, dt.x, dt.y);
+            const distance = Phaser.Math.Distance.Between(originPoint.x, originPoint.y, dt.renderX, dt.renderY);
 
             // normalise range
             let magnitude = 1.0;
             if (distance !== 0.0) {
                 magnitude = 1.0 - (distance / this.forceFalloff);
             }
-            if (magnitude > 0.1) {
+            if (magnitude > 0.5) {
                 simulationScene.removeTerrain(dt);
             }
         });

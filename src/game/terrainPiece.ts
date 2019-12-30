@@ -7,7 +7,6 @@ export class TerrainPiece {
     readonly x: number;
     readonly y: number;
 
-    onDestroy: (terrainPiece: TerrainPiece) => void;
     sprite: Phaser.Physics.Arcade.Sprite;
 
     constructor(simulationScene: SimulationScene, x: number, y: number) {
@@ -44,7 +43,14 @@ export class TerrainPiece {
     }
 
     destroy() {
-        this.simulationScene.removeTerrain(this);
         this.sprite.destroy();
-    };
+    }
+
+    get renderX(): number {
+        return this.sprite.x;
+    }
+
+    get renderY(): number {
+        return this.sprite.y;
+    }
 }

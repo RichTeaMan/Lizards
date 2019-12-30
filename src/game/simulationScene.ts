@@ -48,6 +48,21 @@ export class SimulationScene {
         return projectile;
     }
 
+    public fetchTerrainFromBody(impactBody: Phaser.Physics.Impact.Body) {
+
+        let destructibleTerrain: TerrainPiece = null;
+        const body = (impactBody as any).body;
+        if (body) {
+            const gameObject = body.gameObject;
+            this.destructibleTerrain.forEach(dt => {
+                if ((dt.sprite as any) === gameObject) {
+                    destructibleTerrain = dt;
+                }
+            });
+        }
+        return destructibleTerrain;
+    }
+
     public update() {
         // TODO
     }
@@ -72,9 +87,7 @@ export class SimulationScene {
 
     public removeTerrain(terrainPiece: TerrainPiece): TerrainPiece {
         if (terrainPiece) {
-            if (terrainPiece.onDestroy) {
-                terrainPiece.onDestroy(terrainPiece);
-            }
+            terrainPiece.destroy();
             this.destructibleTerrain = this.destructibleTerrain.filter(t => t !== terrainPiece);
         }
         return terrainPiece;

@@ -96,6 +96,15 @@ function create() {
             if (combatant) {
                 projectile.onCombatantCollision(combatant, simulationScene);
             }
+            else {
+                const dt1 = simulationScene.fetchTerrainFromBody(body);
+                const dt2 = simulationScene.fetchTerrainFromBody(body);
+                const destructibleTerrain = dt1 ? dt1 : dt2;
+
+                if (destructibleTerrain) {
+                    projectile.onTerrainCollision(destructibleTerrain, simulationScene);
+                }
+            }
         }
 
     });
