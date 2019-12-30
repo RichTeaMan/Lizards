@@ -6,25 +6,16 @@ export class SimulationScene {
 
     private _height = 100;
     private _width = 100;
-    private _destructibleTerrain: TerrainPiece[];
+    destructibleTerrain: TerrainPiece[] = [];
     readonly terrainPieceSize = 10;
     readonly scene: Phaser.Scene;
 
-    readonly terrainSprites: Phaser.Physics.Arcade.Sprite[] = [];
     lizards: Combatant[] = [];
     selectedLizard: Phaser.Physics.Arcade.Sprite;
     projectiles: Projectile[] = [];
 
     constructor(scene: Phaser.Scene) {
-        this._destructibleTerrain = [];
         this.scene = scene;
-
-        for (let i = 0; i < this._width; i++) {
-
-            for (let j = this._height / 2; j < this._height; j++) {
-                this._destructibleTerrain.push(new TerrainPiece(this, i, j));
-            }
-        }
     }
 
     public fetchCombatant(impactBody: Phaser.Physics.Impact.Body) {
@@ -61,28 +52,12 @@ export class SimulationScene {
         // TODO
     }
 
-    public get background(): string {
-        return "sky.jpg";
-    }
-
-    public get foreground(): string {
-        return "smallDirt.png";
-    }
-
-    public get lizard(): string {
-        return "lizard.png";
-    }
-
-    public get destructibleTerrain(): TerrainPiece[] {
-        return this._destructibleTerrain;
-    }
-
     public fetchTerrain(x: number, y: number): TerrainPiece {
         let result: TerrainPiece = null;
         const rX = Math.floor(x);
         const rY = Math.floor(y);
         if (x >= 0 && x < this._width && y >= 0 && y < this._height) {
-            let foundTile = this._destructibleTerrain.find(t => t.x === rX && t.y === rY);
+            let foundTile = this.destructibleTerrain.find(t => t.x === rX && t.y === rY);
             if (foundTile) {
                 result = foundTile;
             }
@@ -100,9 +75,29 @@ export class SimulationScene {
             if (terrainPiece.onDestroy) {
                 terrainPiece.onDestroy(terrainPiece);
             }
-            this._destructibleTerrain = this._destructibleTerrain.filter(t => t !== terrainPiece);
+            this.destructibleTerrain = this.destructibleTerrain.filter(t => t !== terrainPiece);
         }
         return terrainPiece;
+    }
+
+    public get background(): string {
+        return "sky.jpg";
+    }
+
+    public get foreground(): string {
+        return "smallDirt.png";
+    }
+
+    public get lizard(): string {
+        return "lizard.png";
+    }
+
+    public get width(): number {
+        return this._width;
+    }
+
+    public get height(): number {
+        return this._height;
     }
 
 }

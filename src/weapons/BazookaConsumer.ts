@@ -4,6 +4,7 @@ import { SimulationScene} from "../game/simulationScene";
 import { Projectile } from "../Projectile";
 import { Combatant } from "../Combatant";
 import { Explosion } from "../Explosion";
+import { TerrainPiece } from "../game/terrainPiece";
 
 export class BazookaConsumer implements Consumer<BazookaPayload> {
     fetchMessageType(): string {
@@ -24,5 +25,9 @@ export class BazookaProjectile extends Projectile {
         explosion.damage = 35;
         explosion.explode(simulationScene);
         this.remove();
+    }
+
+    onTerrainCollision(terrain: TerrainPiece, simulationScene: SimulationScene) {
+        this.onCombatantCollision(null, simulationScene);
     }
 }

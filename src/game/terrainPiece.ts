@@ -3,24 +3,48 @@ import { Square } from "./square";
 
 export class TerrainPiece {
 
-    readonly parentScene: SimulationScene;
+    readonly simulationScene: SimulationScene;
     readonly x: number;
     readonly y: number;
 
     onDestroy: (terrainPiece: TerrainPiece) => void;
+    sprite: Phaser.Physics.Arcade.Sprite;
 
-    constructor(parentScene: SimulationScene, x: number, y: number) {
-        this.parentScene = parentScene;
+    constructor(simulationScene: SimulationScene, x: number, y: number) {
+        this.simulationScene = simulationScene;
         this.x = x;
         this.y = y;
+        const sq = this.calculateRenderSquare();
+        this.sprite = simulationScene.scene.physics.add.sprite(sq.x, sq.y, "foreground");
+        this.sprite.debugShowBody = true;
+        this.sprite.width = sq.width;
+        this.sprite.height = sq.height;
+        this.sprite.body.immovable = true;
+        (this.sprite.body as any).allowGravity = false;
+
+        this.sprite.body.velocity.x = 0;
+        this.sprite.body.velocity.y = 0;
+        this.sprite.body.bounce.x = 1;
+        this.sprite.body.bounce.y = 1;
+
+        this.sprite.setInteractive().addListener('pointerdown', (pointer, localX, localY, event) => {
+            this.destroy();
+        });
+
+        return this;
     }
 
     calculateRenderSquare(): Square {
         const renderSquare = new Square();
-        renderSquare.x = this.parentScene.terrainPieceSize * this.x;
-        renderSquare.y = this.parentScene.terrainPieceSize * this.y;
-        renderSquare.width = this.parentScene.terrainPieceSize;
-        renderSquare.height = this.parentScene.terrainPieceSize;
+        renderSquare.x = this.simulationScene.terrainPieceSize * this.x;
+        renderSquare.y = this.simulationScene.terrainPieceSize * this.y;
+        renderSquare.width = this.simulationScene.terrainPieceSize;
+        renderSquare.height = this.simulationScene.terrainPieceSize;
         return renderSquare;
     }
+
+    destroy() {
+        this.simulationScene.removeTerrain(this);
+        this.sprite.destroy();
+    };
 }

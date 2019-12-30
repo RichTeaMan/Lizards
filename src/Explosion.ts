@@ -15,7 +15,7 @@ export class Explosion {
     /**
      * The distance at which this explosion no longer exerts any force.
      */
-    forceFalloff = 50;
+    forceFalloff = 100;
 
     constructor(x: number, y: number, force: number = 500) {
         this.x = x;
@@ -60,6 +60,19 @@ export class Explosion {
                 const velocityY = Math.sin(angle) * this.force * magnitude * l.sprite.body.mass;
                 l.sprite.setVelocity(velocityX, velocityY);
                 l.damage(this.damage * magnitude);
+            }
+        });
+
+        simulationScene.destructibleTerrain.forEach(dt => {
+            const distance = Phaser.Math.Distance.Between(originPoint.x, originPoint.y, dt.x, dt.y);
+
+            // normalise range
+            let magnitude = 1.0;
+            if (distance !== 0.0) {
+                magnitude = 1.0 - (distance / this.forceFalloff);
+            }
+            if (magnitude > 0.1) {
+                simulationScene.removeTerrain(dt);
             }
         });
     }

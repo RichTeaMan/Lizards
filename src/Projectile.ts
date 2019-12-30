@@ -1,5 +1,6 @@
 import { Combatant } from "./Combatant";
 import { SimulationScene } from "./game/simulationScene";
+import { TerrainPiece } from "./game/terrainPiece";
 
 export class Projectile {
 
@@ -77,6 +78,8 @@ export class Projectile {
     }
 
     onCombatantCollision(combatant: Combatant, simulationScene: SimulationScene) {
+    }
 
+    onTerrainCollision(terrain: TerrainPiece, simulationScene: SimulationScene) {
     }
 }
