@@ -50,8 +50,9 @@ export class Combatant {
      */
     damage(damage: number): Combatant {
 
+        const roundedDamage = Math.ceil(damage);
         // TODO: what if dead?
-        this.health += -damage;
+        this.health += -roundedDamage;
 
         this.healthText.text = this.health.toString();
 

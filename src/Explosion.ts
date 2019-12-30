@@ -7,6 +7,12 @@ export class Explosion {
     force: number = 500;
 
     /**
+     * The damage done by this explosion to combatants. The damage dealt falls off with distance,
+     * this value refers to damage done at the centre.
+     */
+    damage: number = 0;
+
+    /**
      * The distance at which this explosion no longer exerts any force.
      */
     forceFalloff = 50;
@@ -53,6 +59,7 @@ export class Explosion {
                 const velocityX = Math.cos(angle) * this.force * magnitude * l.sprite.body.mass;
                 const velocityY = Math.sin(angle) * this.force * magnitude * l.sprite.body.mass;
                 l.sprite.setVelocity(velocityX, velocityY);
+                l.damage(this.damage * magnitude);
             }
         });
     }
