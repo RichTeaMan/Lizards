@@ -1,0 +1,59 @@
+import { SimulationScene } from "./game/simulationScene";
+
+export class Explosion {
+
+    x: number;
+    y: number;
+    force: number = 500;
+
+    /**
+     * The distance at which this explosion no longer exerts any force.
+     */
+    forceFalloff = 50;
+
+    constructor(x: number, y: number, force: number = 500) {
+        this.x = x;
+        this.y = y;
+        this.force = force;
+    }
+
+    explode(simulationScene: SimulationScene) {
+
+        const originPoint = new Phaser.Geom.Point(this.x, this.y);
+
+        const emitter = simulationScene.scene.add.particles('yellow').createEmitter({
+            x: this.x,
+            y: this.y,
+            //speed: { min: -800, max: 800 },
+            angle: { min: 0, max: 360 },
+            scale: { start: 2.0, end: 0 },
+            blendMode: 'SCREEN',
+            //active: false,
+            lifespan: 100
+        });
+        emitter.start();
+        simulationScene.scene.time.delayedCall(
+            300,
+            () => { emitter.stop(); },
+            null,
+            null);
+
+        simulationScene.lizards.forEach(l => {
+            const lizardPoint = new Phaser.Geom.Point(l.getX(), l.getY());
+            const angle = Phaser.Math.Angle.BetweenPoints(originPoint, lizardPoint);
+            const distance = Phaser.Math.Distance.Between(originPoint.x, originPoint.y, lizardPoint.x, lizardPoint.y);
+
+            // normalise range
+            let magnitude = 1.0;
+            if (distance !== 0.0) {
+                magnitude = 1.0 - (distance / this.forceFalloff);
+            }
+            if (magnitude > 0.0) {
+
+                const velocityX = Math.cos(angle) * this.force * magnitude * l.sprite.body.mass;
+                const velocityY = Math.sin(angle) * this.force * magnitude * l.sprite.body.mass;
+                l.sprite.setVelocity(velocityX, velocityY);
+            }
+        });
+    }
+}

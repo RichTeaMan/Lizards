@@ -3,6 +3,7 @@ import { BazookaPayload } from "./BazookaPayload";
 import { SimulationScene} from "../game/simulationScene";
 import { Projectile } from "../Projectile";
 import { Combatant } from "../Combatant";
+import { Explosion } from "../Explosion";
 
 export class BazookaConsumer implements Consumer<BazookaPayload> {
     fetchMessageType(): string {
@@ -18,8 +19,10 @@ export class BazookaConsumer implements Consumer<BazookaPayload> {
 }
 
 export class BazookaProjectile extends Projectile {
-    onCombatantCollision(combatant: Combatant) {
-        combatant.damage(35);
+    onCombatantCollision(combatant: Combatant, simulationScene: SimulationScene) {
+        const explosion = new Explosion(this.getX(), this.getY());
+        explosion.explode(simulationScene);
+        //combatant.damage(35);
         this.remove();
     }
 }

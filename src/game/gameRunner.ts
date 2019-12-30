@@ -51,6 +51,7 @@ function preload() {
     scene.load.image("foreground", `assets/${simulationScene.foreground}`);
     scene.load.image("lizard", "assets/lizard.png");
     scene.load.image("smoke", "assets/white-smoke.png");
+    scene.load.image("yellow", "assets/yellow.png");
     scene.load.image("bazookaRocket", "assets/bazookaRocket.png");
 }
 
@@ -104,7 +105,7 @@ function create() {
                 const combatant = l1 ? l1 : l2;
 
                 if (combatant) {
-                    projectile.onCombatantCollision(combatant);
+                    projectile.onCombatantCollision(combatant, simulationScene);
                 }
             }
 

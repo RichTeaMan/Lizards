@@ -76,7 +76,7 @@ export class Projectile {
         return this.sprite.y;
     }
 
-    onCombatantCollision(combatant: Combatant) {
+    onCombatantCollision(combatant: Combatant, simulationScene: SimulationScene) {
 
     }
 }
