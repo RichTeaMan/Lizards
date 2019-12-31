@@ -1,11 +1,14 @@
-export class Message<T> {
+import { MessagePayload } from "./MessagePayload";
 
-    readonly messageType: string;
+export class Message<T extends MessagePayload> {
 
     readonly payload: T;
 
-    constructor (messageType: string, payload: T) {
-        this.messageType = messageType;
+    constructor (payload: T) {
         this.payload = payload;
+    }
+
+    getType(): string {
+        return this.payload.getType();
     }
 }

@@ -3,8 +3,9 @@ import { BazookaPayload } from "./BazookaPayload";
 import { SimulationScene } from "../game/simulationScene";
 import { KeyEvent, State } from "../messageBus/KeyEvent";
 import { PointerState } from "../messageBus/PointerState";
+import { MessagePayload } from "../messageBus/MessagePayload";
 
-export class BazookaProducer implements Producer<BazookaPayload> {
+export class BazookaProducer implements Producer {
     fetchMessageType(): string {
         return "bazooka";
     }
@@ -13,9 +14,9 @@ export class BazookaProducer implements Producer<BazookaPayload> {
         simulationScene: SimulationScene,
         keyEvents: KeyEvent[],
         cursors: Phaser.Types.Input.Keyboard.CursorKeys,
-        pointerState: PointerState): BazookaPayload {
+        pointerState: PointerState): MessagePayload[] {
 
-        let payload: BazookaPayload = null;
+        const payloads: MessagePayload[] = [];
         if (keyEvents.some(e => e.state === State.DOWN && e.code === 'Space')) {
 
             const velocity = 500;
@@ -32,13 +33,15 @@ export class BazookaProducer implements Producer<BazookaPayload> {
                 yR = -yR;
             }
 
-            payload = new BazookaPayload();
+            const payload = new BazookaPayload();
             payload.velocityX = xR;
             payload.velocityY = yR;
             payload.originX = simulationScene.selectedLizard.x;
             payload.originY = simulationScene.selectedLizard.y;
+
+            payloads.push(payload);
         }
-        return payload;
+        return payloads;
     }
 
 }

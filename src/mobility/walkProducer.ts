@@ -2,8 +2,9 @@ import { Producer } from "../messageBus/producer";
 import { SimulationScene } from "../game/simulationScene";
 import { MobilityPayload } from "./mobilityPayload";
 import { KeyEvent } from "../messageBus/KeyEvent";
+import { MessagePayload } from "../messageBus/MessagePayload";
 
-export class WalkProducer implements Producer<MobilityPayload> {
+export class WalkProducer implements Producer {
 
     fetchMessageType(): string {
         return "walk";
@@ -12,7 +13,9 @@ export class WalkProducer implements Producer<MobilityPayload> {
     produce(
         simulationScene: SimulationScene,
         keyEvents: KeyEvent[],
-        cursors: Phaser.Types.Input.Keyboard.CursorKeys): MobilityPayload {
+        cursors: Phaser.Types.Input.Keyboard.CursorKeys): MessagePayload[] {
+
+        const payloads: MessagePayload[] = [];
 
         const payload = new MobilityPayload();
         // TODO: something better.
@@ -27,6 +30,7 @@ export class WalkProducer implements Producer<MobilityPayload> {
             payload.jump = true;
         }
 
-        return payload;
+        payloads.push(payload);
+        return payloads;
     }
 }

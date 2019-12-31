@@ -4,14 +4,15 @@ import { Message } from "./message";
 import { Consumer } from "./consumer";
 import { KeyEvent } from "./KeyEvent";
 import { PointerState } from "./PointerState";
+import { MessagePayload } from "./MessagePayload";
 
 export class MessageBus {
 
-    private producers: Array<Producer<unknown>> = [];
+    private producers: Array<Producer> = [];
     private consumers: Record<string, Consumer<unknown>> = {};
-    private messages: Array<Message<unknown>> = [];
+    private messages: Array<Message<MessagePayload>> = [];
 
-    registerProducer(producer: Producer<unknown>): MessageBus {
+    registerProducer(producer: Producer): MessageBus {
 
         this.producers.push(producer);
         return this;
@@ -31,11 +32,11 @@ export class MessageBus {
 
         this.producers.forEach(producer => {
             try {
-                const payload = producer.produce(simulationScene, keyEvents, cursors, pointerState);
-                if (payload) {
-                    const messageType = producer.fetchMessageType();
-                    const message = new Message(messageType, payload);
-                    this.messages.push(message);
+                const payloads = producer.produce(simulationScene, keyEvents, cursors, pointerState);
+                if (payloads) {
+                    payloads.forEach(p => {
+                        this.messages.push(new Message(p));
+                    });
                 }
             }
             catch (error) {
@@ -51,7 +52,7 @@ export class MessageBus {
         this.messages.forEach(message => {
 
             if (message) {
-                const consumer = this.consumers[message.messageType];
+                const consumer = this.consumers[message.getType()];
                 consumer.consume(simulationScene, message.payload);
             }
         });
