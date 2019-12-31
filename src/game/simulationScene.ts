@@ -1,6 +1,7 @@
 import { TerrainPiece } from "./terrainPiece";
 import { Combatant } from "../Combatant";
 import { Projectile } from "../Projectile";
+import { MessageRegister } from "../messageBus/MessageRegister";
 
 export class SimulationScene {
 
@@ -9,13 +10,15 @@ export class SimulationScene {
     destructibleTerrain: TerrainPiece[] = [];
     readonly terrainPieceSize = 10;
     readonly scene: Phaser.Scene;
+    readonly messageRegister: MessageRegister;
 
     lizards: Combatant[] = [];
     selectedLizard: Phaser.Physics.Arcade.Sprite;
     projectiles: Projectile[] = [];
 
-    constructor(scene: Phaser.Scene) {
+    constructor(scene: Phaser.Scene, messageRegister: MessageRegister) {
         this.scene = scene;
+        this.messageRegister = messageRegister;
     }
 
     public fetchCombatant(impactBody: Phaser.Physics.Impact.Body) {

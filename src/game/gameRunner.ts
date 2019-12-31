@@ -9,6 +9,7 @@ import { BazookaConsumer } from '../weapons/BazookaConsumer';
 import { BazookaProducer } from '../weapons/BazookaProducer';
 import { Combatant } from '../Combatant';
 import { TerrainPiece } from './terrainPiece';
+import { ToastConsumer } from '../toast/ToastConsumer';
 
 let simulationScene: SimulationScene;
 let messageBus: MessageBus;
@@ -46,8 +47,9 @@ function preload() {
     messageBus.registerProducer(new BazookaProducer());
     messageBus.registerConsumer(new WalkConsumer());
     messageBus.registerConsumer(new BazookaConsumer());
+    messageBus.registerConsumer(new ToastConsumer());
     const scene = this as Phaser.Scene;
-    simulationScene = new SimulationScene(scene);
+    simulationScene = new SimulationScene(scene, messageBus);
     scene.load.image("background", `assets/${simulationScene.background}`);
     scene.load.image("foreground", `assets/${simulationScene.foreground}`);
     scene.load.image("lizard", "assets/lizard.png");
@@ -165,7 +167,7 @@ function update(time: number, delta: number) {
 
 
     simulationScene.lizards.forEach(l => {
-        l.update(scene);
+        l.update(simulationScene);
     });
 
     simulationScene.projectiles.forEach(p => {

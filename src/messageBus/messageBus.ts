@@ -5,8 +5,10 @@ import { Consumer } from "./consumer";
 import { KeyEvent } from "./KeyEvent";
 import { PointerState } from "./PointerState";
 import { MessagePayload } from "./MessagePayload";
+import { MessageRegister } from "./MessageRegister";
 
-export class MessageBus {
+export class MessageBus implements MessageRegister {
+
 
     private producers: Array<Producer> = [];
     private consumers: Record<string, Consumer<unknown>> = {};
@@ -24,6 +26,10 @@ export class MessageBus {
         return this;
     }
 
+    registerMessage(messagePayload: MessagePayload) {
+        this.messages.push(new Message(messagePayload));
+    }
+
     processProducers(
         simulationScene: SimulationScene,
         keyEvents: KeyEvent[],
@@ -35,7 +41,7 @@ export class MessageBus {
                 const payloads = producer.produce(simulationScene, keyEvents, cursors, pointerState);
                 if (payloads) {
                     payloads.forEach(p => {
-                        this.messages.push(new Message(p));
+                        this.registerMessage(p);
                     });
                 }
             }
@@ -49,14 +55,17 @@ export class MessageBus {
 
     processConsumers(simulationScene: SimulationScene): MessageBus {
 
-        this.messages.forEach(message => {
+        // the message queue needs to be cleared, but consumers may wish to add their own messages,
+        // so backup the buffer and then clear.
+        const currentMessages = this.messages;
+        this.messages = [];
+        currentMessages.forEach(message => {
 
             if (message) {
                 const consumer = this.consumers[message.getType()];
                 consumer.consume(simulationScene, message.payload);
             }
         });
-        this.messages = [];
         return this;
     }
 }

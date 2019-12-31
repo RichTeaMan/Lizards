@@ -1,3 +1,6 @@
+import { SimulationScene } from "./game/simulationScene";
+import { ToastPayload } from "./toast/ToastPayload";
+
 export class Combatant {
 
     static names: string[] = [
@@ -19,6 +22,7 @@ export class Combatant {
     healthText: Phaser.GameObjects.Text;
     healthTextOffsetX: number = -10;
     healthTextOffsetY: number = -40;
+    dead: boolean = false;
 
 
     constructor() {
@@ -33,11 +37,16 @@ export class Combatant {
         return this;
     }
 
-    update(scene: Phaser.Scene): Combatant {
+    update(scene: SimulationScene): Combatant {
 
         this.nameText.x = this.getX() + this.nameTextOffsetX;
         this.nameText.y = this.getY() + this.nameTextOffsetY;
 
+        if (this.health < 0 && !this.dead) {
+            this.dead = true;
+            this.healthText.text = "DEAD";
+            scene.messageRegister.registerMessage(ToastPayload.createToast(`${this.name} blew up!`));
+        }
         this.healthText.x = this.getX() + this.healthTextOffsetX;
         this.healthText.y = this.getY() + this.healthTextOffsetY;
 
@@ -50,12 +59,11 @@ export class Combatant {
      */
     damage(damage: number): Combatant {
 
-        const roundedDamage = Math.ceil(damage);
-        // TODO: what if dead?
-        this.health += -roundedDamage;
-
-        this.healthText.text = this.health.toString();
-
+        if (!this.dead) {
+            const roundedDamage = Math.ceil(damage);
+            this.health += -roundedDamage;
+            this.healthText.text = this.health.toString();
+        }
         return this;
     }
 
