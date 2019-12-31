@@ -10,6 +10,7 @@ import { BazookaProducer } from '../weapons/BazookaProducer';
 import { Combatant } from '../Combatant';
 import { TerrainPiece } from './terrainPiece';
 import { ToastConsumer } from '../toast/ToastConsumer';
+import { Team } from '../Team';
 
 let simulationScene: SimulationScene;
 let messageBus: MessageBus;
@@ -63,11 +64,17 @@ function create() {
     const scene = this as Phaser.Scene;
     render(scene);
 
-    simulationScene.lizards.push(new Combatant().initialise(scene, 100, 200));
-    simulationScene.lizards.push(new Combatant().initialise(scene, 200, 400));
-    simulationScene.lizards.push(new Combatant().initialise(scene, 325, 350));
-    simulationScene.lizards.push(new Combatant().initialise(scene, 465, 100));
-    simulationScene.lizards.push(new Combatant().initialise(scene, 700, 320));
+    const team1 = new Team();
+    team1.name = "Team 1";
+    const team2 = new Team();
+    team2.name = "Team 2";
+
+    simulationScene.lizards.push(new Combatant().initialise(scene, 100, 200, team1));
+    simulationScene.lizards.push(new Combatant().initialise(scene, 200, 400, team1));
+    simulationScene.lizards.push(new Combatant().initialise(scene, 325, 350, team1));
+    simulationScene.lizards.push(new Combatant().initialise(scene, 465, 100, team2));
+    simulationScene.lizards.push(new Combatant().initialise(scene, 700, 320, team2));
+    simulationScene.lizards.push(new Combatant().initialise(scene, 815, 360, team2));
 
     simulationScene.lizards.forEach(l => {
         l.sprite.scale = 0.1;

@@ -1,5 +1,6 @@
 import { SimulationScene } from "./game/simulationScene";
 import { ToastPayload } from "./toast/ToastPayload";
+import { Team } from "./Team";
 
 export class Combatant {
 
@@ -29,9 +30,12 @@ export class Combatant {
         this.name = Combatant.names[Math.floor(Math.random() * Combatant.names.length)];
     }
 
-    initialise(scene: Phaser.Scene, x: number, y: number): Combatant {
+    initialise(scene: Phaser.Scene, x: number, y: number, team: Team): Combatant {
+
+        team.combatants.push(this);
+
         this.sprite = scene.physics.add.sprite(x, y, "lizard").setDragX(100);
-        this.nameText = scene.add.text(x + this.nameTextOffsetX, y + this.nameTextOffsetY, this.name);
+        this.nameText = scene.add.text(x + this.nameTextOffsetX, y + this.nameTextOffsetY, `${this.name} - ${team.name}`);
         this.healthText = scene.add.text(x + this.healthTextOffsetX, y + this.healthTextOffsetY, this.health.toString());
 
         return this;
