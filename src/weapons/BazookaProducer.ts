@@ -4,6 +4,7 @@ import { SimulationScene } from "../game/simulationScene";
 import { KeyEvent, State } from "../messageBus/KeyEvent";
 import { PointerState } from "../messageBus/PointerState";
 import { MessagePayload } from "../messageBus/MessagePayload";
+import { EndTurnMessagePayload } from "../endTurn/EndTurnMessagePayload";
 
 export class BazookaProducer implements Producer {
     fetchMessageType(): string {
@@ -40,6 +41,7 @@ export class BazookaProducer implements Producer {
             payload.originY = simulationScene.selectedLizard.y;
 
             payloads.push(payload);
+            payloads.push(new EndTurnMessagePayload());
         }
         return payloads;
     }

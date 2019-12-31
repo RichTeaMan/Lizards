@@ -11,6 +11,8 @@ import { Combatant } from '../Combatant';
 import { TerrainPiece } from './terrainPiece';
 import { ToastConsumer } from '../toast/ToastConsumer';
 import { Team } from '../Team';
+import { EndTurnConsumer } from '../endTurn/EndTurnConsumer';
+import { EndTurnMessagePayload } from '../endTurn/EndTurnMessagePayload';
 
 let simulationScene: SimulationScene;
 let messageBus: MessageBus;
@@ -49,6 +51,7 @@ function preload() {
     messageBus.registerConsumer(new WalkConsumer());
     messageBus.registerConsumer(new BazookaConsumer());
     messageBus.registerConsumer(new ToastConsumer());
+    messageBus.registerConsumer(new EndTurnConsumer());
     const scene = this as Phaser.Scene;
     simulationScene = new SimulationScene(scene, messageBus);
     scene.load.image("background", `assets/${simulationScene.background}`);
@@ -68,6 +71,9 @@ function create() {
     team1.name = "Team 1";
     const team2 = new Team();
     team2.name = "Team 2";
+    
+    simulationScene.teams.push(team1);
+    simulationScene.teams.push(team2);
 
     simulationScene.lizards.push(new Combatant().initialise(scene, 100, 200, team1));
     simulationScene.lizards.push(new Combatant().initialise(scene, 200, 400, team1));
@@ -80,7 +86,8 @@ function create() {
         l.sprite.scale = 0.1;
         l.sprite.setBounce(0.1).setCollideWorldBounds(true);
     });
-    simulationScene.selectedLizard = simulationScene.lizards[0].sprite;
+
+    simulationScene.selectedLizard = simulationScene.lizards[0];
 
     for (let i = 0; i < simulationScene.width; i++) {
         for (let j = simulationScene.height / 2; j < simulationScene.height; j++) {
@@ -124,6 +131,10 @@ function create() {
     scene.input.keyboard.on('keyup', function (event: KeyboardEvent) {
         keyEvents.push(new KeyEvent(event.code, State.UP, event.ctrlKey, event.shiftKey))
     });
+
+    
+    // initiate turn machinery
+    messageBus.registerMessage(new EndTurnMessagePayload());
 
 }
 

@@ -45,7 +45,7 @@ export class Explosion {
             null);
 
         simulationScene.lizards.forEach(l => {
-            const lizardPoint = new Phaser.Geom.Point(l.getX(), l.getY());
+            const lizardPoint = new Phaser.Geom.Point(l.x, l.y);
             const angle = Phaser.Math.Angle.BetweenPoints(originPoint, lizardPoint);
             const distance = Phaser.Math.Distance.Between(originPoint.x, originPoint.y, lizardPoint.x, lizardPoint.y);
 

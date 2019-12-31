@@ -2,6 +2,7 @@ import { TerrainPiece } from "./terrainPiece";
 import { Combatant } from "../Combatant";
 import { Projectile } from "../Projectile";
 import { MessageRegister } from "../messageBus/MessageRegister";
+import { Team } from "../Team";
 
 export class SimulationScene {
 
@@ -12,13 +13,48 @@ export class SimulationScene {
     readonly scene: Phaser.Scene;
     readonly messageRegister: MessageRegister;
 
-    lizards: Combatant[] = [];
-    selectedLizard: Phaser.Physics.Arcade.Sprite;
+    teams: Team[] = [];
+    selectedLizard: Combatant;
     projectiles: Projectile[] = [];
+
+    private lastTeam: Team;
 
     constructor(scene: Phaser.Scene, messageRegister: MessageRegister) {
         this.scene = scene;
         this.messageRegister = messageRegister;
+    }
+
+    /**
+     * Fetches the team team due to have their turn next.
+     * A team will have remaining combatants. If no such combatant is found null is returned.
+     * Calling this method increments the internal combatant counter.
+     */
+    fetchNextTeam(): Team {
+
+        if (!this.lastTeam) {
+            this.lastTeam = this.teams[0];
+        }
+        else {
+            let nextTeam: Team = null;
+            const startIndex = this.teams.indexOf(this.lastTeam);
+            let i = startIndex + 1;
+            while (!nextTeam) {
+                if (i === this.teams.length) {
+                    i = 0;
+                }
+                const team = this.teams[i];
+                if (team === this.lastTeam) {
+                    // there are no more teams, exit
+                    return null;
+                }
+                else if (team.combatants.length > 0) {
+                    nextTeam = team;
+                }
+                i++;
+            }
+            this.lastTeam = nextTeam;
+        }
+        return this.lastTeam;
     }
 
     public fetchCombatant(impactBody: Phaser.Physics.Impact.Body) {
@@ -114,6 +150,10 @@ export class SimulationScene {
 
     public get height(): number {
         return this._height;
+    }
+
+    public get lizards(): Combatant[] {
+        return this.teams.flatMap(t => t.combatants);
     }
 
 }

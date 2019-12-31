@@ -24,6 +24,7 @@ export class Combatant {
     healthTextOffsetX: number = -10;
     healthTextOffsetY: number = -40;
     dead: boolean = false;
+    team: Team;
 
 
     constructor() {
@@ -32,6 +33,7 @@ export class Combatant {
 
     initialise(scene: Phaser.Scene, x: number, y: number, team: Team): Combatant {
 
+        this.team = team;
         team.combatants.push(this);
 
         this.sprite = scene.physics.add.sprite(x, y, "lizard").setDragX(100);
@@ -43,16 +45,16 @@ export class Combatant {
 
     update(scene: SimulationScene): Combatant {
 
-        this.nameText.x = this.getX() + this.nameTextOffsetX;
-        this.nameText.y = this.getY() + this.nameTextOffsetY;
+        this.nameText.x = this.x + this.nameTextOffsetX;
+        this.nameText.y = this.y + this.nameTextOffsetY;
 
         if (this.health < 0 && !this.dead) {
             this.dead = true;
             this.healthText.text = "DEAD";
             scene.messageRegister.registerMessage(ToastPayload.createToast(`${this.name} blew up!`));
         }
-        this.healthText.x = this.getX() + this.healthTextOffsetX;
-        this.healthText.y = this.getY() + this.healthTextOffsetY;
+        this.healthText.x = this.x + this.healthTextOffsetX;
+        this.healthText.y = this.y + this.healthTextOffsetY;
 
         return this;
     }
@@ -71,11 +73,11 @@ export class Combatant {
         return this;
     }
 
-    getX(): number {
+    get x(): number {
         return this.sprite.x;
     }
 
-    getY(): number {
+    get y(): number {
         return this.sprite.y;
     }
 }
