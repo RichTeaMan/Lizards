@@ -10,7 +10,16 @@ const App: React.FC = () => {
       <h1>
         Lizards
       </h1>
-      <div id="game-container" />
+      <section className="container">
+        <div className="one"><div id="game-container" /></div>
+        <div className="two">
+          <h2>Controls:</h2>
+          <p>
+            Mouse wheel to zoom.
+          </p>
+        </div>
+      </section>
+
       <a href="https://github.com/RichTeaMan/Lizards" target="_blank" rel="noreferrer noopener">Source Code</a>
     </div>
   );
