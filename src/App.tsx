@@ -15,7 +15,7 @@ const App: React.FC = () => {
         <div className="two">
           <h2>Controls:</h2>
           <p>
-            Mouse wheel to zoom.
+            Mouse wheel to zoom. Pan around the map by dragging with the middle mouse button.
           </p>
         </div>
       </section>

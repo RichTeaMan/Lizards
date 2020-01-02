@@ -17,6 +17,8 @@ import { EndTurnMessagePayload } from '../endTurn/EndTurnMessagePayload';
 let simulationScene: SimulationScene;
 let messageBus: MessageBus;
 let keyEvents: KeyEvent[] = [];
+let dragMode: boolean = false;
+let lastDragPosition = { x: 0, y: 0 };
 
 const gameConfig: Phaser.Types.Core.GameConfig = {
     title: 'Sample',
@@ -132,6 +134,20 @@ function create() {
         keyEvents.push(new KeyEvent(event.code, State.UP, event.ctrlKey, event.shiftKey))
     });
 
+    scene.input.on('pointerdown', function (pointer: Phaser.Input.Pointer) {
+        if (pointer.middleButtonDown()) {
+            dragMode = true;
+            lastDragPosition.x = pointer.x;
+            lastDragPosition.y = pointer.y;
+        }
+    });
+
+    scene.input.on('pointerup', function (pointer: Phaser.Input.Pointer) {
+        if (pointer.middleButtonReleased()) {
+            dragMode = false;
+        }
+    });
+
     scene.input.on('wheel', function (pointer, currentlyOver, dx, dy: number, dz, event) {
 
         const zoomDelta = 0.2;
@@ -149,7 +165,6 @@ function create() {
         }
         console.log(scene.cameras.main.zoom);
     });
-
 
     // initiate turn machinery
     messageBus.registerMessage(new EndTurnMessagePayload());
@@ -211,6 +226,17 @@ function update(time: number, delta: number) {
     })
 
     simulationScene.projectiles = simulationScene.projectiles.filter(p => !p.exploded);
+
+    if (dragMode) {
+        const pointer = scene.input.activePointer;
+        const deltaX = pointer.x - lastDragPosition.x;
+        const deltaY = pointer.y - lastDragPosition.y;
+        scene.cameras.main.x += deltaX;
+        scene.cameras.main.y += deltaY;
+
+        lastDragPosition.x = pointer.x;
+        lastDragPosition.y = pointer.y;
+    }
 }
 
 const sceneConfig: Phaser.Types.Scenes.SettingsConfig = {
