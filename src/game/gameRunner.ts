@@ -71,7 +71,7 @@ function create() {
     team1.name = "Team 1";
     const team2 = new Team();
     team2.name = "Team 2";
-    
+
     simulationScene.teams.push(team1);
     simulationScene.teams.push(team2);
 
@@ -132,7 +132,25 @@ function create() {
         keyEvents.push(new KeyEvent(event.code, State.UP, event.ctrlKey, event.shiftKey))
     });
 
-    
+    scene.input.on('wheel', function (pointer, currentlyOver, dx, dy: number, dz, event) {
+
+        const zoomDelta = 0.2;
+        if (dy < 0) {
+            scene.cameras.main.zoom += zoomDelta;
+        }
+        else {
+            scene.cameras.main.zoom -= zoomDelta;
+        }
+        if (scene.cameras.main.zoom < 0.2) {
+            scene.cameras.main.zoom = 0.2;
+        }
+        else if (scene.cameras.main.zoom > 4) {
+            scene.cameras.main.zoom = 4;
+        }
+        console.log(scene.cameras.main.zoom);
+    });
+
+
     // initiate turn machinery
     messageBus.registerMessage(new EndTurnMessagePayload());
 
