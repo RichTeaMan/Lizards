@@ -13,6 +13,9 @@ export class SimulationScene {
     readonly scene: Phaser.Scene;
     readonly messageRegister: MessageRegister;
 
+    readonly renderOffsetX = 500;
+    readonly renderOffsetY = 500;
+
     teams: Team[] = [];
     selectedLizard: Combatant;
     projectiles: Projectile[] = [];
@@ -130,10 +133,6 @@ export class SimulationScene {
             this.destructibleTerrain = this.destructibleTerrain.filter(t => t !== terrainPiece);
         }
         return terrainPiece;
-    }
-
-    public get background(): string {
-        return "sky.jpg";
     }
 
     public get foreground(): string {

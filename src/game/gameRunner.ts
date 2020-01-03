@@ -13,21 +13,25 @@ import { ToastConsumer } from '../toast/ToastConsumer';
 import { Team } from '../Team';
 import { EndTurnConsumer } from '../endTurn/EndTurnConsumer';
 import { EndTurnMessagePayload } from '../endTurn/EndTurnMessagePayload';
+import { BackgroundRenderer } from '../scenery/BackgroundRenderer';
+import { SkyBackgroundRenderer } from '../scenery/SkyBackgroundRenderer';
 
 let simulationScene: SimulationScene;
 let messageBus: MessageBus;
 let keyEvents: KeyEvent[] = [];
 let dragMode: boolean = false;
 let lastDragPosition = { x: 0, y: 0 };
+let backgroundRenderer: BackgroundRenderer;
 
 const gameConfig: Phaser.Types.Core.GameConfig = {
-    title: 'Sample',
+    title: 'Lizards',
 
     type: Phaser.AUTO,
 
     parent: "game-container",
     width: 1000,
     height: 1000,
+
 
     physics: {
         default: 'arcade',
@@ -56,17 +60,24 @@ function preload() {
     messageBus.registerConsumer(new EndTurnConsumer());
     const scene = this as Phaser.Scene;
     simulationScene = new SimulationScene(scene, messageBus);
-    scene.load.image("background", `assets/${simulationScene.background}`);
     scene.load.image("foreground", `assets/${simulationScene.foreground}`);
     scene.load.image("lizard", "assets/lizard.png");
     scene.load.image("smoke", "assets/white-smoke.png");
     scene.load.image("yellow", "assets/yellow.png");
     scene.load.image("bazookaRocket", "assets/bazookaRocket.png");
+
+    //scene.cameras.main.x = -simulationScene.renderOffsetX;
+    //scene.cameras.main.y = -simulationScene.renderOffsetY;
+
+    scene.cameras.main.setViewport(0, 0, 1000, 1000);
 }
 
 function create() {
 
     const scene = this as Phaser.Scene;
+
+    backgroundRenderer = new SkyBackgroundRenderer();
+
     render(scene);
 
     const team1 = new Team();
@@ -163,7 +174,7 @@ function create() {
         else if (scene.cameras.main.zoom > 4) {
             scene.cameras.main.zoom = 4;
         }
-        console.log(scene.cameras.main.zoom);
+
     });
 
     // initiate turn machinery
@@ -173,10 +184,7 @@ function create() {
 
 function render(scene: Phaser.Scene) {
 
-    const logo = scene.add.image(0, 0, "background");
-
-    logo.scaleY = (logo.height * 2) / Number(gameConfig.height);
-    logo.scaleX = (logo.width * 2) / Number(gameConfig.width);
+    backgroundRenderer.render(simulationScene);
 }
 
 /**
@@ -231,8 +239,19 @@ function update(time: number, delta: number) {
         const pointer = scene.input.activePointer;
         const deltaX = pointer.x - lastDragPosition.x;
         const deltaY = pointer.y - lastDragPosition.y;
-        scene.cameras.main.x += deltaX;
-        scene.cameras.main.y += deltaY;
+        //scene.cameras.main.x += deltaX;
+        //scene.cameras.main.y += deltaY;
+
+        scene.cameras.main.setScroll(scene.cameras.main.scrollX - deltaX, scene.cameras.main.scrollY - deltaY);
+
+        if (scene.cameras.main.x < 0) {
+            scene.cameras.main.x = 0;
+        }
+        if (scene.cameras.main.y < 0) {
+            scene.cameras.main.y = 0;
+        }
+
+        console.log(`${scene.cameras.main.x}, ${scene.cameras.main.y} - ${scene.cameras.main.width}`);
 
         lastDragPosition.x = pointer.x;
         lastDragPosition.y = pointer.y;
