@@ -1,17 +1,15 @@
 import * as Phaser from 'phaser';
 import { SimulationState } from './SimulationState';
 import { MessageBus } from '../messageBus/messageBus';
-import { KeyEvent, State } from '../messageBus/KeyEvent';
-import { PointerState } from '../messageBus/PointerState';
 import { BazookaConsumer } from '../weapons/BazookaConsumer';
 import { BazookaProducer } from '../weapons/BazookaProducer';
 import { ToastConsumer } from '../toast/ToastConsumer';
 import { EndTurnConsumer } from '../endTurn/EndTurnConsumer';
 import { EndTurnMessagePayload } from '../endTurn/EndTurnMessagePayload';
-import { BackgroundRenderer } from '../scenery/BackgroundRenderer';
 import { WalkProducer } from '../mobility/walkProducer';
 import { WalkConsumer } from '../mobility/walkConsumer';
 import { GameScene } from './GameScene';
+import { UiScene } from './UiScene';
 
 const gameConfig: Phaser.Types.Core.GameConfig = {
     title: 'Lizards',
@@ -19,7 +17,7 @@ const gameConfig: Phaser.Types.Core.GameConfig = {
     parent: "game-container",
     width: 1000,
     height: 1000,
-    scene: [GameScene],
+    scene: [GameScene, UiScene],
     physics: {
         default: 'arcade',
         arcade: {

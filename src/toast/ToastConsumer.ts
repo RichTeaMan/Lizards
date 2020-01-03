@@ -15,10 +15,10 @@ export class ToastConsumer implements Consumer<ToastPayload> {
 
     consume(simulationScene: SimulationState, payload: ToastPayload): void {
 
-        const toast = simulationScene.gameScene.add.text(this.startX, this.startY + (this.toasts.length * this.spacingY), payload.toastMessage);
+        const toast = simulationScene.uiScene.add.text(this.startX, this.startY + (this.toasts.length * this.spacingY), payload.toastMessage);
         this.toasts.push(toast);
 
-        simulationScene.gameScene.time.delayedCall(
+        simulationScene.uiScene.time.delayedCall(
             payload.durationMilliseconds,
             () => { 
                 this.toasts = this.toasts.filter(t => t !== toast);

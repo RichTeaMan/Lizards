@@ -4,6 +4,8 @@ import { Projectile } from "../Projectile";
 import { MessageRegister } from "../messageBus/MessageRegister";
 import { Team } from "../Team";
 import { MessageBus } from "../messageBus/messageBus";
+import { UiScene } from "./UiScene";
+import { GameScene } from "./GameScene";
 
 export class SimulationState {
 
@@ -15,7 +17,8 @@ export class SimulationState {
         return SimulationState._current;
     }
     
-    public gameScene: Phaser.Scene;
+    public gameScene: GameScene;
+    public uiScene: UiScene;
 
     private _height = 100;
     private _width = 100;
