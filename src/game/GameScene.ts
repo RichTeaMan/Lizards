@@ -14,6 +14,8 @@ export class GameScene extends Phaser.Scene {
     private keyEvents: KeyEvent[] = [];
     private dragMode: boolean = false;
     private lastDragPosition = { x: 0, y: 0 };
+    private selectedArrowSprite: Phaser.GameObjects.Sprite;
+    private selectedArrowOffsetY = -65;
 
     constructor() {
         super('GameScene');
@@ -28,6 +30,7 @@ export class GameScene extends Phaser.Scene {
         this.load.image("smoke", "assets/white-smoke.png");
         this.load.image("yellow", "assets/yellow.png");
         this.load.image("bazookaRocket", "assets/bazookaRocket.png");
+        this.load.image("selectArrow", "assets/selectArrow.png");
 
         this.cameras.main.setViewport(0, 0, 1000, 1000);
     }
@@ -37,8 +40,9 @@ export class GameScene extends Phaser.Scene {
         this.messageBus = SimulationState.current().messageRegister as MessageBus;
 
         this.backgroundRenderer = new SkyBackgroundRenderer();
+        this.selectedArrowSprite = this.add.sprite(0, 0, "selectArrow").setScale(0.5);
 
-        this.render(this);
+        this.render();
 
         const team1 = new Team();
         team1.name = "Team 1";
@@ -99,7 +103,7 @@ export class GameScene extends Phaser.Scene {
             }
 
         });
-        
+
         const gameScene = this;
         this.input.keyboard.on('keydown', function (event: KeyboardEvent) {
             gameScene.keyEvents.push(new KeyEvent(event.code, State.DOWN, event.ctrlKey, event.shiftKey));
@@ -109,7 +113,7 @@ export class GameScene extends Phaser.Scene {
         });
 
         this.input.on('pointerdown', function (pointer: Phaser.Input.Pointer) {
-            
+
             if (pointer.middleButtonDown() && pointer) {
                 gameScene.dragMode = true;
                 gameScene.lastDragPosition.x = pointer.x;
@@ -143,9 +147,18 @@ export class GameScene extends Phaser.Scene {
 
     }
 
-    public render(scene: Phaser.Scene) {
+    public render() {
 
         this.backgroundRenderer.render(SimulationState.current());
+
+        // move selected arrow
+        if (SimulationState.current().selectedLizard) {
+            this.selectedArrowSprite.setVisible(true);
+            this.selectedArrowSprite.setPosition(SimulationState.current().selectedLizard.x, SimulationState.current().selectedLizard.y + this.selectedArrowOffsetY);
+        }
+        else {
+            this.selectedArrowSprite.setVisible(false);
+        }
     }
 
     /**
@@ -157,6 +170,8 @@ export class GameScene extends Phaser.Scene {
     public update(time: number, delta: number) {
 
         const scene = this as Phaser.Scene;
+
+        this.render();
 
         this.physics.world.setBoundsCollision(false, false, false, false);
 
@@ -194,7 +209,7 @@ export class GameScene extends Phaser.Scene {
 
         SimulationState.current().projectiles.forEach(p => {
             p.update(scene);
-        })
+        });
 
         SimulationState.current().projectiles = SimulationState.current().projectiles.filter(p => !p.exploded);
 
@@ -211,8 +226,6 @@ export class GameScene extends Phaser.Scene {
             if (scene.cameras.main.y < 0) {
                 scene.cameras.main.y = 0;
             }
-
-            console.log(`${scene.cameras.main.x}, ${scene.cameras.main.y} - ${scene.cameras.main.width}`);
 
             this.lastDragPosition.x = pointer.x;
             this.lastDragPosition.y = pointer.y;
