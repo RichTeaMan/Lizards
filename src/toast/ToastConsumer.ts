@@ -4,7 +4,7 @@ import { ToastPayload } from "./ToastPayload";
 
 export class ToastConsumer implements Consumer<ToastPayload> {
 
-    private startX = 850;
+    private rightMargin = 50;
     private startY = 50;
     private spacingY = 30;
     toasts: Phaser.GameObjects.Text[] = [];
@@ -15,7 +15,9 @@ export class ToastConsumer implements Consumer<ToastPayload> {
 
     consume(simulationScene: SimulationState, payload: ToastPayload): void {
 
-        const toast = simulationScene.uiScene.add.text(this.startX, this.startY + (this.toasts.length * this.spacingY), payload.toastMessage);
+        const toast = simulationScene.uiScene.add.text(0, this.startY + (this.toasts.length * this.spacingY), payload.toastMessage);
+        const startX = simulationScene.uiScene.cameras.main.width - (this.rightMargin + toast.width);
+        toast.x = startX;
         this.toasts.push(toast);
 
         simulationScene.uiScene.time.delayedCall(
