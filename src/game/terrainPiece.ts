@@ -35,8 +35,8 @@ export class TerrainPiece {
 
     calculateRenderSquare(): Square {
         const renderSquare = new Square();
-        renderSquare.x = this.simulationScene.renderOffsetX + (this.simulationScene.terrainPieceSize * this.x);
-        renderSquare.y = this.simulationScene.renderOffsetY + (this.simulationScene.terrainPieceSize * this.y);
+        renderSquare.x = this.simulationScene.terrainPieceSize * this.x;
+        renderSquare.y = this.simulationScene.terrainPieceSize * this.y;
         renderSquare.width = this.simulationScene.terrainPieceSize;
         renderSquare.height = this.simulationScene.terrainPieceSize;
         return renderSquare;

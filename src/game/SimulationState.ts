@@ -27,9 +27,6 @@ export class SimulationState {
 
     readonly messageRegister: MessageRegister;
 
-    readonly renderOffsetX = 500;
-    readonly renderOffsetY = 500;
-
     teams: Team[] = [];
     selectedLizard: Combatant;
     projectiles: Projectile[] = [];
