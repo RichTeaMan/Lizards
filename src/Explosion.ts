@@ -1,4 +1,4 @@
-import { SimulationScene } from "./game/simulationScene";
+import { SimulationState } from "./game/SimulationState";
 
 export class Explosion {
 
@@ -23,11 +23,11 @@ export class Explosion {
         this.force = force;
     }
 
-    explode(simulationScene: SimulationScene) {
+    explode(simulationScene: SimulationState) {
 
         const originPoint = new Phaser.Geom.Point(this.x, this.y);
 
-        const emitter = simulationScene.scene.add.particles('yellow').createEmitter({
+        const emitter = simulationScene.gameScene.add.particles('yellow').createEmitter({
             x: this.x,
             y: this.y,
             //speed: { min: -800, max: 800 },
@@ -38,7 +38,7 @@ export class Explosion {
             lifespan: 100
         });
         emitter.start();
-        simulationScene.scene.time.delayedCall(
+        simulationScene.gameScene.time.delayedCall(
             300,
             () => { emitter.stop(); },
             null,

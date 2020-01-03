@@ -1,10 +1,10 @@
-import { SimulationScene } from "../game/simulationScene";
+import { SimulationState } from "../game/SimulationState";
 
 export interface Consumer<T> {
 
     fetchMessageType(): string;
 
     consume(
-        simulationScene: SimulationScene,
+        simulationScene: SimulationState,
         payload: T): void;
 }

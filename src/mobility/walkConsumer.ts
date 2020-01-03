@@ -1,4 +1,4 @@
-import { SimulationScene } from "../game/simulationScene";
+import { SimulationState } from "../game/SimulationState";
 import { Consumer } from "../messageBus/consumer";
 import { MobilityPayload } from "./mobilityPayload";
 
@@ -9,7 +9,7 @@ export class WalkConsumer implements Consumer<MobilityPayload> {
     }
 
     consume(
-        simulationScene: SimulationScene,
+        simulationScene: SimulationState,
         payload: MobilityPayload): void {
 
         if (payload.left) {

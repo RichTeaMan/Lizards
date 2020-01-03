@@ -1,5 +1,5 @@
 import { Consumer } from "../messageBus/consumer";
-import { SimulationScene } from "../game/simulationScene";
+import { SimulationState } from "../game/SimulationState";
 import { ToastPayload } from "./ToastPayload";
 
 export class ToastConsumer implements Consumer<ToastPayload> {
@@ -13,12 +13,12 @@ export class ToastConsumer implements Consumer<ToastPayload> {
         return "toast";
     }
 
-    consume(simulationScene: SimulationScene, payload: ToastPayload): void {
+    consume(simulationScene: SimulationState, payload: ToastPayload): void {
 
-        const toast = simulationScene.scene.add.text(this.startX, this.startY + (this.toasts.length * this.spacingY), payload.toastMessage);
+        const toast = simulationScene.gameScene.add.text(this.startX, this.startY + (this.toasts.length * this.spacingY), payload.toastMessage);
         this.toasts.push(toast);
 
-        simulationScene.scene.time.delayedCall(
+        simulationScene.gameScene.time.delayedCall(
             payload.durationMilliseconds,
             () => { 
                 this.toasts = this.toasts.filter(t => t !== toast);

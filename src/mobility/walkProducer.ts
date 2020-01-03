@@ -1,5 +1,5 @@
 import { Producer } from "../messageBus/producer";
-import { SimulationScene } from "../game/simulationScene";
+import { SimulationState } from "../game/SimulationState";
 import { MobilityPayload } from "./mobilityPayload";
 import { KeyEvent } from "../messageBus/KeyEvent";
 import { MessagePayload } from "../messageBus/MessagePayload";
@@ -11,7 +11,7 @@ export class WalkProducer implements Producer {
     }
 
     produce(
-        simulationScene: SimulationScene,
+        simulationScene: SimulationState,
         keyEvents: KeyEvent[],
         cursors: Phaser.Types.Input.Keyboard.CursorKeys): MessagePayload[] {
 

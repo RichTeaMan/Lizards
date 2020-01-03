@@ -1,5 +1,5 @@
 import { Combatant } from "./Combatant";
-import { SimulationScene } from "./game/simulationScene";
+import { SimulationState } from "./game/SimulationState";
 import { TerrainPiece } from "./game/terrainPiece";
 
 export class Projectile {
@@ -15,8 +15,8 @@ export class Projectile {
 
     
 
-    initialise(simulationScene: SimulationScene,x : number, y: number, velocityX: number, velocityY: number): Projectile {
-        this.sprite = simulationScene.scene.physics.add.sprite(x, y, "bazookaRocket");
+    initialise(simulationScene: SimulationState,x : number, y: number, velocityX: number, velocityY: number): Projectile {
+        this.sprite = simulationScene.gameScene.physics.add.sprite(x, y, "bazookaRocket");
 
         this.sprite.body.onCollide = true;
         this.sprite.setVelocityX(velocityX);
@@ -36,7 +36,7 @@ export class Projectile {
         });
         */
 
-        this.travelEmitter = simulationScene.scene.add.particles('smoke').createEmitter({
+        this.travelEmitter = simulationScene.gameScene.add.particles('smoke').createEmitter({
             //x: this.getX(),
             //y: this.getY(),
             //speed: { min: -800, max: 800 },
@@ -77,9 +77,9 @@ export class Projectile {
         return this.sprite.y;
     }
 
-    onCombatantCollision(combatant: Combatant, simulationScene: SimulationScene) {
+    onCombatantCollision(combatant: Combatant, simulationScene: SimulationState) {
     }
 
-    onTerrainCollision(terrain: TerrainPiece, simulationScene: SimulationScene) {
+    onTerrainCollision(terrain: TerrainPiece, simulationScene: SimulationState) {
     }
 }

@@ -1,10 +1,10 @@
 import { BackgroundRenderer } from "./BackgroundRenderer";
-import { SimulationScene } from "../game/simulationScene";
+import { SimulationState } from "../game/SimulationState";
 
 export class SkyBackgroundRenderer implements BackgroundRenderer {
-    render(simulationScene: SimulationScene): void {
+    render(simulationScene: SimulationState): void {
         
-        simulationScene.scene.cameras.main.setBackgroundColor("#87ceeb");
+        simulationScene.gameScene.cameras.main.setBackgroundColor("#87ceeb");
     }
 
 }

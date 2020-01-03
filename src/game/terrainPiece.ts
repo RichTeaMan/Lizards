@@ -1,20 +1,20 @@
-import { SimulationScene } from "./simulationScene";
+import { SimulationState } from "./SimulationState";
 import { Square } from "./square";
 
 export class TerrainPiece {
 
-    readonly simulationScene: SimulationScene;
+    readonly simulationScene: SimulationState;
     readonly x: number;
     readonly y: number;
 
     sprite: Phaser.Physics.Arcade.Sprite;
 
-    constructor(simulationScene: SimulationScene, x: number, y: number) {
+    constructor(simulationScene: SimulationState, x: number, y: number) {
         this.simulationScene = simulationScene;
         this.x = x;
         this.y = y;
         const sq = this.calculateRenderSquare();
-        this.sprite = simulationScene.scene.physics.add.sprite(sq.x, sq.y, "foreground");
+        this.sprite = simulationScene.gameScene.physics.add.sprite(sq.x, sq.y, "foreground");
         this.sprite.debugShowBody = true;
         this.sprite.width = sq.width;
         this.sprite.height = sq.height;

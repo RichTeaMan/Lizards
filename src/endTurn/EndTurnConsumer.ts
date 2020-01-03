@@ -1,6 +1,6 @@
 import { EndTurnMessagePayload } from "./EndTurnMessagePayload";
 import { Consumer } from "../messageBus/consumer";
-import { SimulationScene } from "../game/simulationScene";
+import { SimulationState } from "../game/SimulationState";
 import { ToastPayload } from "../toast/ToastPayload";
 
 export class EndTurnConsumer implements Consumer<EndTurnMessagePayload> {
@@ -11,7 +11,7 @@ export class EndTurnConsumer implements Consumer<EndTurnMessagePayload> {
         return EndTurnConsumer.messageType;
     }
 
-    consume(simulationScene: SimulationScene, payload: EndTurnMessagePayload): void {
+    consume(simulationScene: SimulationState, payload: EndTurnMessagePayload): void {
 
         // get next team
         const nextTeam = simulationScene.fetchNextTeam();

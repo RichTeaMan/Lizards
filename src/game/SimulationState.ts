@@ -3,14 +3,25 @@ import { Combatant } from "../Combatant";
 import { Projectile } from "../Projectile";
 import { MessageRegister } from "../messageBus/MessageRegister";
 import { Team } from "../Team";
+import { MessageBus } from "../messageBus/messageBus";
 
-export class SimulationScene {
+export class SimulationState {
+
+    private static _current: SimulationState = null;
+    public static current(): SimulationState {
+        if (!SimulationState._current) {
+            SimulationState._current = new SimulationState(new MessageBus());
+        }
+        return SimulationState._current;
+    }
+    
+    public gameScene: Phaser.Scene;
 
     private _height = 100;
     private _width = 100;
     destructibleTerrain: TerrainPiece[] = [];
     readonly terrainPieceSize = 10;
-    readonly scene: Phaser.Scene;
+
     readonly messageRegister: MessageRegister;
 
     readonly renderOffsetX = 500;
@@ -22,8 +33,7 @@ export class SimulationScene {
 
     private lastTeam: Team;
 
-    constructor(scene: Phaser.Scene, messageRegister: MessageRegister) {
-        this.scene = scene;
+    constructor(messageRegister: MessageRegister) {
         this.messageRegister = messageRegister;
     }
 

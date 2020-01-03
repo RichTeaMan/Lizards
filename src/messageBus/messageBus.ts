@@ -1,5 +1,5 @@
 import { Producer } from "./producer";
-import { SimulationScene } from "../game/simulationScene";
+import { SimulationState } from "../game/SimulationState";
 import { Message } from "./message";
 import { Consumer } from "./consumer";
 import { KeyEvent } from "./KeyEvent";
@@ -31,7 +31,7 @@ export class MessageBus implements MessageRegister {
     }
 
     processProducers(
-        simulationScene: SimulationScene,
+        simulationScene: SimulationState,
         keyEvents: KeyEvent[],
         cursors: Phaser.Types.Input.Keyboard.CursorKeys,
         pointerState: PointerState): MessageBus {
@@ -53,7 +53,7 @@ export class MessageBus implements MessageRegister {
         return this;
     }
 
-    processConsumers(simulationScene: SimulationScene): MessageBus {
+    processConsumers(simulationScene: SimulationState): MessageBus {
 
         // the message queue needs to be cleared, but consumers may wish to add their own messages,
         // so backup the buffer and then clear.

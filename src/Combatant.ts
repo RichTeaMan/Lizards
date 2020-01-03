@@ -1,4 +1,4 @@
-import { SimulationScene } from "./game/simulationScene";
+import { SimulationState } from "./game/SimulationState";
 import { ToastPayload } from "./toast/ToastPayload";
 import { Team } from "./Team";
 
@@ -43,7 +43,7 @@ export class Combatant {
         return this;
     }
 
-    update(scene: SimulationScene): Combatant {
+    update(scene: SimulationState): Combatant {
 
         this.nameText.x = this.x + this.nameTextOffsetX;
         this.nameText.y = this.y + this.nameTextOffsetY;

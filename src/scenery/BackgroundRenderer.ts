@@ -1,5 +1,5 @@
-import { SimulationScene } from "../game/simulationScene";
+import { SimulationState } from "../game/SimulationState";
 
 export interface BackgroundRenderer {
-    render(simulationScene: SimulationScene): void;
+    render(simulationScene: SimulationState): void;
 }

@@ -1,6 +1,6 @@
 import { Producer } from "../messageBus/producer";
 import { BazookaPayload } from "./BazookaPayload";
-import { SimulationScene } from "../game/simulationScene";
+import { SimulationState } from "../game/SimulationState";
 import { KeyEvent, State } from "../messageBus/KeyEvent";
 import { PointerState } from "../messageBus/PointerState";
 import { MessagePayload } from "../messageBus/MessagePayload";
@@ -12,7 +12,7 @@ export class BazookaProducer implements Producer {
     }
 
     produce(
-        simulationScene: SimulationScene,
+        simulationScene: SimulationState,
         keyEvents: KeyEvent[],
         cursors: Phaser.Types.Input.Keyboard.CursorKeys,
         pointerState: PointerState): MessagePayload[] {
