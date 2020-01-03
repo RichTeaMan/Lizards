@@ -156,6 +156,8 @@ export class GameScene extends Phaser.Scene {
 
         const scene = this as Phaser.Scene;
 
+        this.physics.world.setBoundsCollision(false, false, false, false);
+
         SimulationState.current().destructibleTerrain.forEach(s => {
             SimulationState.current().lizards.forEach(l => {
                 scene.physics.world.collide(s.sprite, l.sprite);
