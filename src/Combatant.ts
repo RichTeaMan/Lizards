@@ -39,11 +39,9 @@ export class Combatant {
         this.sprite = scene.physics.add.sprite(x, y, "lizard").setDragX(100);
 
         this.nameText = scene.add.text(x, y, this.name);
-        this.nameTextOffsetX = -(this.nameText.displayWidth / 2);
         this.nameText.setColor(this.team.colour);
 
         this.healthText = scene.add.text(x, y, this.health.toString());
-        this.healthTextOffsetX = -(this.healthText.displayWidth / 2);
         this.healthText.setColor(this.team.colour);
         return this;
     }
@@ -57,6 +55,7 @@ export class Combatant {
             this.dead = true;
             this.healthText.text = "DEAD";
             scene.messageRegister.registerMessage(ToastPayload.createToast(`${this.name} blew up!`));
+            this.centerText();
         }
         this.healthText.x = this.x + this.healthTextOffsetX;
         this.healthText.y = this.y + this.healthTextOffsetY;
@@ -74,8 +73,14 @@ export class Combatant {
             const roundedDamage = Math.ceil(damage);
             this.health += -roundedDamage;
             this.healthText.text = this.health.toString();
+            this.centerText();
         }
         return this;
+    }
+
+    private centerText() {
+        this.nameTextOffsetX = -(this.nameText.displayWidth / 2);
+        this.healthTextOffsetX = -(this.healthText.displayWidth / 2);
     }
 
     get x(): number {
