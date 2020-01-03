@@ -3,11 +3,10 @@ import { SkyBackgroundRenderer } from "../scenery/SkyBackgroundRenderer";
 import { SimulationState } from "./SimulationState";
 import { Team } from "../Team";
 import { Combatant } from "../Combatant";
-import { TerrainPiece } from "./terrainPiece";
 import { KeyEvent, State } from "../messageBus/KeyEvent";
 import { PointerState } from "../messageBus/PointerState";
 import { MessageBus } from "../messageBus/messageBus";
-import { FlatTerrainGenerator } from "../terrainGeneration/FlatTerrainGenerator";
+import { SineWaveTerrainGenerator } from "../terrainGeneration/SineWaveTerrainGenerator";
 
 export class GameScene extends Phaser.Scene {
     private backgroundRenderer: BackgroundRenderer;
@@ -69,7 +68,7 @@ export class GameScene extends Phaser.Scene {
 
         SimulationState.current().selectedLizard = SimulationState.current().lizards[0];
 
-        new FlatTerrainGenerator().generate(SimulationState.current());
+        new SineWaveTerrainGenerator().generate(SimulationState.current());
 
         this.physics.world.on('collide', (body: Phaser.Physics.Impact.Body, other: Phaser.Physics.Impact.Body, axis: string) => {
 
