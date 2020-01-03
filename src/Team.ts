@@ -7,6 +7,7 @@ export class Team {
     name: string;
 
     combatants: Combatant[] = [];
+    colour: string = "#ffffff";
 
     fetchRemainingCombatants(): Combatant[] {
         return this.combatants.filter(c => !c.dead);

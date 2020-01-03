@@ -42,8 +42,10 @@ export class GameScene extends Phaser.Scene {
 
         const team1 = new Team();
         team1.name = "Team 1";
+        team1.colour = "#FF0000";
         const team2 = new Team();
         team2.name = "Team 2";
+        team2.colour = "#0000FF";
 
         SimulationState.current().teams.push(team1);
         SimulationState.current().teams.push(team2);

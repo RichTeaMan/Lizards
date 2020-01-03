@@ -37,9 +37,14 @@ export class Combatant {
         team.combatants.push(this);
 
         this.sprite = scene.physics.add.sprite(x, y, "lizard").setDragX(100);
-        this.nameText = scene.add.text(x + this.nameTextOffsetX, y + this.nameTextOffsetY, `${this.name} - ${team.name}`);
-        this.healthText = scene.add.text(x + this.healthTextOffsetX, y + this.healthTextOffsetY, this.health.toString());
 
+        this.nameText = scene.add.text(x, y, this.name);
+        this.nameTextOffsetX = -(this.nameText.displayWidth / 2);
+        this.nameText.setColor(this.team.colour);
+
+        this.healthText = scene.add.text(x, y, this.health.toString());
+        this.healthTextOffsetX = -(this.healthText.displayWidth / 2);
+        this.healthText.setColor(this.team.colour);
         return this;
     }
 
