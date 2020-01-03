@@ -7,6 +7,7 @@ import { TerrainPiece } from "./terrainPiece";
 import { KeyEvent, State } from "../messageBus/KeyEvent";
 import { PointerState } from "../messageBus/PointerState";
 import { MessageBus } from "../messageBus/messageBus";
+import { FlatTerrainGenerator } from "../terrainGeneration/FlatTerrainGenerator";
 
 export class GameScene extends Phaser.Scene {
     private backgroundRenderer: BackgroundRenderer;
@@ -68,13 +69,7 @@ export class GameScene extends Phaser.Scene {
 
         SimulationState.current().selectedLizard = SimulationState.current().lizards[0];
 
-        for (let i = 0; i < SimulationState.current().width; i++) {
-            for (let j = SimulationState.current().height / 2; j < SimulationState.current().height; j++) {
-
-                const terrain = new TerrainPiece(SimulationState.current(), i, j);
-                SimulationState.current().destructibleTerrain.push(terrain);
-            }
-        }
+        new FlatTerrainGenerator().generate(SimulationState.current());
 
         this.physics.world.on('collide', (body: Phaser.Physics.Impact.Body, other: Phaser.Physics.Impact.Body, axis: string) => {
 
