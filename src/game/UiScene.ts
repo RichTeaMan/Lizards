@@ -1,6 +1,6 @@
 import { SimulationState } from "./SimulationState";
 import { WeaponChoiceScreen } from "../ui/WeaponChoiceScreen";
-import { BazookaProducer } from "../weapons/BazookaProducer";
+import { BazookaProducer } from "../weapons/bazooka/BazookaProducer";
 
 export class UiScene extends Phaser.Scene {
 

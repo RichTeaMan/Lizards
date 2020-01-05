@@ -1,11 +1,11 @@
-import { Producer } from "../messageBus/producer";
+import { Producer } from "../../messageBus/producer";
 import { BazookaPayload } from "./BazookaPayload";
-import { SimulationState } from "../game/SimulationState";
-import { KeyEvent, State } from "../messageBus/KeyEvent";
-import { PointerState } from "../messageBus/PointerState";
-import { MessagePayload } from "../messageBus/MessagePayload";
-import { EndTurnMessagePayload } from "../endTurn/EndTurnMessagePayload";
-import { WeaponChoice } from "../ui/WeaponChoice";
+import { SimulationState } from "../../game/SimulationState";
+import { KeyEvent, State } from "../../messageBus/KeyEvent";
+import { PointerState } from "../../messageBus/PointerState";
+import { MessagePayload } from "../../messageBus/MessagePayload";
+import { EndTurnMessagePayload } from "../../endTurn/EndTurnMessagePayload";
+import { WeaponChoice } from "../../ui/WeaponChoice";
 
 export class BazookaProducer implements Producer, WeaponChoice {
 

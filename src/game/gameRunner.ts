@@ -1,8 +1,8 @@
 import * as Phaser from 'phaser';
 import { SimulationState } from './SimulationState';
 import { MessageBus } from '../messageBus/messageBus';
-import { BazookaConsumer } from '../weapons/BazookaConsumer';
-import { BazookaProducer } from '../weapons/BazookaProducer';
+import { BazookaConsumer } from '../weapons/bazooka/BazookaConsumer';
+import { BazookaProducer } from '../weapons/bazooka/BazookaProducer';
 import { ToastConsumer } from '../toast/ToastConsumer';
 import { EndTurnConsumer } from '../endTurn/EndTurnConsumer';
 import { EndTurnMessagePayload } from '../endTurn/EndTurnMessagePayload';

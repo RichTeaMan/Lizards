@@ -1,4 +1,4 @@
-import { MessagePayload } from "../messageBus/MessagePayload";
+import { MessagePayload } from "../../messageBus/MessagePayload";
 
 export class BazookaPayload implements MessagePayload {
 
