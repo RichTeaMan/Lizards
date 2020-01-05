@@ -7,6 +7,7 @@ import { KeyEvent, State } from "../messageBus/KeyEvent";
 import { PointerState } from "../messageBus/PointerState";
 import { MessageBus } from "../messageBus/messageBus";
 import { SineWaveTerrainGenerator } from "../terrainGeneration/SineWaveTerrainGenerator";
+import { EndTurnMessagePayload } from "../endTurn/EndTurnMessagePayload";
 
 export class GameScene extends Phaser.Scene {
 
@@ -228,6 +229,11 @@ export class GameScene extends Phaser.Scene {
         SimulationState.current().projectiles.forEach(p => {
             p.update(scene);
         });
+
+        // check if selected player is dead
+        if (SimulationState.current().selectedLizard.dead) {
+            SimulationState.current().messageRegister.registerMessage(new EndTurnMessagePayload());
+        }
 
         // remove exploded projectiles
         SimulationState.current().projectiles = SimulationState.current().projectiles.filter(p => !p.exploded);
