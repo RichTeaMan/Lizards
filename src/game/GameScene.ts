@@ -12,6 +12,10 @@ export class GameScene extends Phaser.Scene {
     private backgroundRenderer: BackgroundRenderer;
     private messageBus: MessageBus;
     private keyEvents: KeyEvent[] = [];
+
+    /**
+     * Indicates if the camera is being dragged.
+     */
     private dragMode: boolean = false;
     private lastDragPosition = { x: 0, y: 0 };
     private selectedArrowSprite: Phaser.GameObjects.Sprite;
@@ -162,8 +166,13 @@ export class GameScene extends Phaser.Scene {
 
         this.render();
 
+
+        // set collisions - must be done every update
         this.physics.world.setBoundsCollision(false, false, false, false);
 
+        // TODO: this sets every chunk of terrain for collision detection. This is very
+        // expensive and is limiting potential map size. Should only set outside facing terrain
+        // for collision checks
         SimulationState.current().destructibleTerrain.forEach(s => {
             SimulationState.current().lizards.forEach(l => {
                 scene.physics.world.collide(s.sprite, l.sprite);
@@ -180,6 +189,8 @@ export class GameScene extends Phaser.Scene {
             });
         });
 
+        // process messages
+
         const cursors = scene.input.keyboard.createCursorKeys();
 
         const x = scene.input.activePointer.x;
@@ -192,6 +203,7 @@ export class GameScene extends Phaser.Scene {
         this.keyEvents = [];
 
 
+        // update combatants and projectiles
         SimulationState.current().lizards.forEach(l => {
             l.update(SimulationState.current());
         });
@@ -200,13 +212,16 @@ export class GameScene extends Phaser.Scene {
             p.update(scene);
         });
 
+        // remove exploded projectiles
         SimulationState.current().projectiles = SimulationState.current().projectiles.filter(p => !p.exploded);
 
+        // pan the camera
         if (this.dragMode) {
             const pointer = scene.input.activePointer;
             const deltaX = pointer.x - this.lastDragPosition.x;
             const deltaY = pointer.y - this.lastDragPosition.y;
 
+            // TODO: this panning doesn't follow the mouse exactly if a non 1.0 scale is being used.
             scene.cameras.main.setScroll(scene.cameras.main.scrollX - deltaX, scene.cameras.main.scrollY - deltaY);
 
             if (scene.cameras.main.x < 0) {
