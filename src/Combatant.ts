@@ -1,7 +1,6 @@
 import { SimulationState } from "./game/SimulationState";
 import { ToastPayload } from "./toast/ToastPayload";
 import { Team } from "./Team";
-
 export class Combatant {
 
     private static names: string[] = [
@@ -48,6 +47,14 @@ export class Combatant {
 
         this.healthText = scene.add.text(x, y, this.health.toString());
         this.healthText.setColor(this.team.colour);
+
+        if (Math.random() >= 0.5) {
+            this.faceLeft();
+        }
+        else {
+            this.faceRight();
+        }
+
         return this;
     }
 
@@ -84,10 +91,25 @@ export class Combatant {
     }
 
     /**
+     * Combatant will face left.
+     */
+    public faceLeft(): void {
+        this.sprite.flipX = true;
+    }
+
+    /**
+     * Combatant will face right.
+     */
+    public faceRight(): void {
+        this.sprite.flipX = false;
+    }
+
+    /**
      * The combatant will move left.
      */
     public velocityLeft(): void {
         this.sprite.setVelocityX(-this.walkVelocity);
+        this.faceLeft();
     }
 
     /**
@@ -95,6 +117,7 @@ export class Combatant {
      */
     public velocityRight(): void {
         this.sprite.setVelocityX(this.walkVelocity);
+        this.faceRight();
     }
 
     /**
