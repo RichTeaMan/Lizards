@@ -10,6 +10,10 @@ import { ShotgunPayload } from "./ShotgunPayload";
 
 export class ShotgunProducer implements Producer, WeaponChoice {
 
+    /**
+     * The last turn a shotgun was used. This is used to determine if a second shot is available.
+     */
+    private lastTurnShot = -1;
     fetchMessageType(): string {
         return ShotgunConsumer.messageType;
     }
@@ -44,7 +48,12 @@ export class ShotgunProducer implements Producer, WeaponChoice {
             payload.originY = simulationScene.selectedLizard.y;
 
             payloads.push(payload);
-            payloads.push(new EndTurnMessagePayload());
+            if (this.lastTurnShot === simulationScene.turnCount) {
+                payloads.push(new EndTurnMessagePayload());
+            }
+            else {
+                this.lastTurnShot = simulationScene.turnCount;
+            }
         }
         return payloads;
     }
@@ -54,7 +63,7 @@ export class ShotgunProducer implements Producer, WeaponChoice {
     }
 
     get description(): string {
-        return "Shotguns things.";
+        return "Low damage weapon that can fire twice per turn.";
     }
 
     get weaponProducer(): Producer {

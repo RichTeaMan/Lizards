@@ -33,6 +33,7 @@ export class EndTurnConsumer implements Consumer<EndTurnMessagePayload> {
                 simulationScene.messageRegister.registerMessage(ToastPayload.createToast(`${nextCombatant.team.name}, ${nextCombatant.name}'s turn!`));
 
                 this.updateTurnMessage(simulationScene, `${nextCombatant.team.name}, ${nextCombatant.name}'s turn!`, nextCombatant.team.colour);
+                simulationScene.turnCount++;
             }
         }
     }

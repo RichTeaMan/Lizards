@@ -10,6 +10,11 @@ import { WeaponChoice } from "../ui/WeaponChoice";
 
 export class SimulationState {
 
+    /**
+     * Gets the number of turns that have elapsed.
+     */
+    public turnCount: number = 0;
+
     private static _current: SimulationState = null;
     public static current(): SimulationState {
         if (!SimulationState._current) {
@@ -19,10 +24,10 @@ export class SimulationState {
     }
 
     private _selectedWeapon: WeaponChoice;
-    public get selectedWeapon() :WeaponChoice {
+    public get selectedWeapon(): WeaponChoice {
         return this._selectedWeapon;
     }
-    
+
     public gameScene: GameScene;
     public uiScene: UiScene;
 
