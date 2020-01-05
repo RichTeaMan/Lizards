@@ -21,10 +21,10 @@ export class BazookaConsumer implements Consumer<BazookaPayload> {
 
 export class BazookaProjectile extends Projectile {
     onCombatantCollision(combatant: Combatant, simulationScene: SimulationState) {
-        const explosion = new Explosion(this.getX(), this.getY());
+        const explosion = new Explosion(this.x, this.y);
         explosion.damage = 35;
         explosion.explode(simulationScene);
-        this.remove();
+        this.explode();
     }
 
     onTerrainCollision(terrain: TerrainPiece, simulationScene: SimulationState) {

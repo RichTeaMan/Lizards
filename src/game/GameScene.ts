@@ -9,6 +9,10 @@ import { MessageBus } from "../messageBus/messageBus";
 import { SineWaveTerrainGenerator } from "../terrainGeneration/SineWaveTerrainGenerator";
 
 export class GameScene extends Phaser.Scene {
+
+    private readonly minCameraZoom = 0.2;
+    private readonly maxCameraZoom = 4.0;
+
     private backgroundRenderer: BackgroundRenderer;
     private messageBus: MessageBus;
     private keyEvents: KeyEvent[] = [];
@@ -129,11 +133,11 @@ export class GameScene extends Phaser.Scene {
             else {
                 gameScene.cameras.main.zoom -= zoomDelta;
             }
-            if (gameScene.cameras.main.zoom < 0.2) {
-                gameScene.cameras.main.zoom = 0.2;
+            if (gameScene.cameras.main.zoom < gameScene.minCameraZoom) {
+                gameScene.cameras.main.zoom = gameScene.minCameraZoom;
             }
-            else if (gameScene.cameras.main.zoom > 4) {
-                gameScene.cameras.main.zoom = 4;
+            else if (gameScene.cameras.main.zoom > gameScene.maxCameraZoom) {
+                gameScene.cameras.main.zoom = gameScene.maxCameraZoom;
             }
 
         });
@@ -201,6 +205,19 @@ export class GameScene extends Phaser.Scene {
         this.messageBus.processConsumers(SimulationState.current());
 
         this.keyEvents = [];
+
+        // check combatants and projectiles are out of bounds;
+        SimulationState.current().lizards.forEach(l => {
+            if (l.y > SimulationState.current().terrainPieceSize * SimulationState.current().height * this.maxCameraZoom) {
+                l.damage(10000);
+            }
+        });
+
+        SimulationState.current().projectiles.forEach(p => {
+            if (p.y < SimulationState.current().height) {
+                p.remove();
+            }
+        });
 
 
         // update combatants and projectiles

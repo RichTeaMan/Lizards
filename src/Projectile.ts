@@ -56,9 +56,19 @@ export class Projectile {
         return this;
     }
 
+    /**
+     * Moves the projectile with no fanfare.
+     */
     remove(): void {
-        this.exploded = true;
         this.sprite.destroy();
+        this.exploded = true;
+    }
+
+    /**
+     * Explodes and removes the projectile.
+     */
+    explode(): void {
+        this.remove();
         if (this.travelEmitter) {
             this.travelEmitter.stop();
             this.travelEmitter.killAll();
@@ -69,11 +79,11 @@ export class Projectile {
         }
     }
 
-    getX(): number {
+    get x(): number {
         return this.sprite.x;
     }
 
-    getY(): number {
+    get y(): number {
         return this.sprite.y;
     }
 
