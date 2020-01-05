@@ -34,7 +34,7 @@ export class ShotgunProjectile extends Projectile {
         const explosion = new Explosion(this.x, this.y);
         explosion.damage = 15;
         explosion.explode(simulationScene);
-        this.explode();
+        this.remove();
     }
 
     onTerrainCollision(terrain: TerrainPiece, simulationScene: SimulationState) {

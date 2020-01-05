@@ -24,7 +24,7 @@ export class BazookaProjectile extends Projectile {
         const explosion = new Explosion(this.x, this.y);
         explosion.damage = 35;
         explosion.explode(simulationScene);
-        this.explode();
+        this.remove();
     }
 
     onTerrainCollision(terrain: TerrainPiece, simulationScene: SimulationState) {

@@ -215,7 +215,7 @@ export class GameScene extends Phaser.Scene {
         });
 
         SimulationState.current().projectiles.forEach(p => {
-            if (p.y < SimulationState.current().height) {
+            if (p.y > SimulationState.current().terrainPieceSize * SimulationState.current().height) {
                 p.remove();
             }
         });

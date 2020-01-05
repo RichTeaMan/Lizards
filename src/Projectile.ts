@@ -13,15 +13,13 @@ export class Projectile {
      */
     exploded: boolean = false;
 
-    
-
-    initialise(simulationScene: SimulationState,x : number, y: number, velocityX: number, velocityY: number): Projectile {
+    initialise(simulationScene: SimulationState, x: number, y: number, velocityX: number, velocityY: number): Projectile {
         this.sprite = simulationScene.gameScene.physics.add.sprite(x, y, "bazookaRocket");
 
         this.sprite.body.onCollide = true;
         this.sprite.setVelocityX(velocityX);
         this.sprite.setVelocityY(velocityY);
-        
+
         /*
         this.collisionEmitter = simulationScene.add.particles('spark0').createEmitter({
             x: 400,
@@ -62,13 +60,7 @@ export class Projectile {
     remove(): void {
         this.sprite.destroy();
         this.exploded = true;
-    }
 
-    /**
-     * Explodes and removes the projectile.
-     */
-    explode(): void {
-        this.remove();
         if (this.travelEmitter) {
             this.travelEmitter.stop();
             this.travelEmitter.killAll();
