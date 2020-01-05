@@ -9,7 +9,7 @@ import { ShotgunPayload } from "./ShotgunPayload";
 export class ShotgunConsumer implements Consumer<ShotgunPayload> {
 
     static readonly messageType = "shotgun";
-    
+
     fetchMessageType(): string {
         return ShotgunConsumer.messageType;
     }
@@ -23,6 +23,13 @@ export class ShotgunConsumer implements Consumer<ShotgunPayload> {
 }
 
 export class ShotgunProjectile extends Projectile {
+
+    initialise(simulationState: SimulationState, x: number, y: number, velocityX: number, velocityY: number): Projectile {
+        const projectile = super.initialise(simulationState, x, y, velocityX, velocityY);
+        projectile.travelEmitter.stop();
+        return projectile;
+    }
+
     onCombatantCollision(combatant: Combatant, simulationScene: SimulationState) {
         const explosion = new Explosion(this.x, this.y);
         explosion.damage = 15;
