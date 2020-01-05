@@ -15,6 +15,9 @@ const App: React.FC = () => {
         <div className="two">
           <h2>Controls:</h2>
           <p>
+            Aim with the mouse and shoot with the space bar. Move lizards with the arrow keys.
+          </p>
+          <p>
             Mouse wheel to zoom. Pan around the map by dragging with the middle mouse button.
           </p>
         </div>

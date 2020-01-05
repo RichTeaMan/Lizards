@@ -33,7 +33,7 @@ export class SimulationState {
 
     // if the scene gets only slightly larger than this then collision detection stops working. not sure why yet.
     private _height = 100;
-    private _width = 250;
+    private _width = 200;
 
     destructibleTerrain: TerrainPiece[] = [];
     private cachedOutsideTerrain: TerrainPiece[] = null;

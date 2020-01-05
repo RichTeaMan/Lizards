@@ -9,7 +9,7 @@ export class SineWaveTerrainGenerator implements TerrainGenerator {
 
             const startHeight = Math.floor((Math.sin(i / (2 * Math.PI)) * 10) + simulationState.height / 2);
 
-            for (let j = startHeight; j < (simulationState.height / 2) + 50; j++) {
+            for (let j = startHeight; j < (simulationState.height / 2) + 30; j++) {
 
                 const terrain = new TerrainPiece(simulationState, i, j);
                 simulationState.destructibleTerrain.push(terrain);
