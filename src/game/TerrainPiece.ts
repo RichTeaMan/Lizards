@@ -7,7 +7,8 @@ export class TerrainPiece {
     readonly x: number;
     readonly y: number;
 
-    sprite: Phaser.Physics.Arcade.Sprite;
+    readonly sprite: Phaser.Physics.Arcade.Sprite;
+    private _destroyed: boolean = false;
 
     constructor(simulationScene: SimulationState, x: number, y: number) {
         this.simulationScene = simulationScene;
@@ -45,6 +46,7 @@ export class TerrainPiece {
     }
 
     destroy() {
+        this._destroyed = true;
         this.sprite.destroy();
     }
 
@@ -54,5 +56,9 @@ export class TerrainPiece {
 
     get renderY(): number {
         return this.sprite.y;
+    }
+
+    get destroyed(): boolean {
+        return this._destroyed;
     }
 }

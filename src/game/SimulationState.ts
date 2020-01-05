@@ -34,6 +34,8 @@ export class SimulationState {
     private _height = 100;
     private _width = 100;
     destructibleTerrain: TerrainPiece[] = [];
+    private cachedOutsideTerrain: TerrainPiece[] = null;
+    private cachedNotDestroyedTerrainCount = -1;
     readonly terrainPieceSize = 10;
 
     readonly messageRegister: MessageRegister;
@@ -58,7 +60,7 @@ export class SimulationState {
      * A team will have remaining combatants. If no such combatant is found null is returned.
      * Calling this method increments the internal combatant counter.
      */
-    fetchNextTeam(): Team {
+    public fetchNextTeam(): Team {
 
         if (!this.lastTeam) {
             this.lastTeam = this.teams[0];
@@ -139,9 +141,9 @@ export class SimulationState {
         let result: TerrainPiece = null;
         const rX = Math.floor(x);
         const rY = Math.floor(y);
-        if (x >= 0 && x < this._width && y >= 0 && y < this._height) {
+        if (x >= 0 && x <= this._width && y >= 0 && y <= this._height) {
             let foundTile = this.destructibleTerrain.find(t => t.x === rX && t.y === rY);
-            if (foundTile) {
+            if (foundTile && !foundTile.destroyed) {
                 result = foundTile;
             }
         }
@@ -159,6 +161,58 @@ export class SimulationState {
             this.destructibleTerrain = this.destructibleTerrain.filter(t => t !== terrainPiece);
         }
         return terrainPiece;
+    }
+
+    /**
+     * Gets terrain with an outside facing edge.
+     */
+    public fetchOutsideTerrain(): TerrainPiece[] {
+
+        const notDestroyed = this.destructibleTerrain.filter(dt => !dt.destroyed);
+        if (this.cachedOutsideTerrain === null || notDestroyed.length !== this.cachedNotDestroyedTerrainCount) {
+
+            const outsideTerrain: TerrainPiece[] = [];
+
+            notDestroyed.forEach(dt => {
+
+                // north
+                const north = this.fetchTerrain(dt.x, dt.y - 1);
+                if (!north) {
+                    outsideTerrain.push(dt);
+                    return;
+                }
+
+                // east
+                const east = this.fetchTerrain(dt.x + 1, dt.y);
+                if (!east) {
+                    outsideTerrain.push(dt);
+                    return;
+                }
+
+                // south
+                const south = this.fetchTerrain(dt.x, dt.y + 1);
+                if (!south) {
+                    outsideTerrain.push(dt);
+                    return;
+                }
+
+                // west
+                const west = this.fetchTerrain(dt.x - 1, dt.y);
+                if (!west) {
+                    outsideTerrain.push(dt);
+                    return;
+                }
+
+
+            });
+            this.cachedOutsideTerrain = outsideTerrain;
+            this.cachedNotDestroyedTerrainCount = notDestroyed.length;
+
+            // collision mode render for debugging
+            this.destructibleTerrain.forEach(dt => dt.sprite.visible = false);
+            outsideTerrain.forEach(dt => dt.sprite.visible = true);
+        }
+        return this.cachedOutsideTerrain;
     }
 
     public get foreground(): string {

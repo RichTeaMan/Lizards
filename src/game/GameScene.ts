@@ -175,10 +175,7 @@ export class GameScene extends Phaser.Scene {
         // set collisions - must be done every update
         this.physics.world.setBoundsCollision(false, false, false, false);
 
-        // TODO: this sets every chunk of terrain for collision detection. This is very
-        // expensive and is limiting potential map size. Should only set outside facing terrain
-        // for collision checks
-        SimulationState.current().destructibleTerrain.forEach(s => {
+        SimulationState.current().fetchOutsideTerrain().forEach(s => {
             SimulationState.current().lizards.forEach(l => {
                 scene.physics.world.collide(s.sprite, l.sprite);
             });
