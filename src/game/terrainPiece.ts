@@ -26,8 +26,10 @@ export class TerrainPiece {
         this.sprite.body.bounce.x = 1;
         this.sprite.body.bounce.y = 1;
 
-        this.sprite.setInteractive().addListener('pointerdown', (pointer, localX, localY, event) => {
-            this.destroy();
+        this.sprite.setInteractive().addListener('pointerdown', (pointer: Phaser.Input.Pointer) => {
+            if (pointer.leftButtonDown()) {
+                this.destroy();
+            }
         });
 
         return this;
