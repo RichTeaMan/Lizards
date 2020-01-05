@@ -1,5 +1,5 @@
 import { EndTurnMessagePayload } from "./EndTurnMessagePayload";
-import { Consumer } from "../messageBus/consumer";
+import { Consumer } from "../messageBus/Consumer";
 import { SimulationState } from "../game/SimulationState";
 import { ToastPayload } from "../toast/ToastPayload";
 

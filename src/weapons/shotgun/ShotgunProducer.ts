@@ -1,4 +1,4 @@
-import { Producer } from "../../messageBus/producer";
+import { Producer } from "../../messageBus/Producer";
 import { SimulationState } from "../../game/SimulationState";
 import { KeyEvent, State } from "../../messageBus/KeyEvent";
 import { PointerState } from "../../messageBus/PointerState";

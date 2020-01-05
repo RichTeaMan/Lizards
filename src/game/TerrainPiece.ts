@@ -1,5 +1,5 @@
 import { SimulationState } from "./SimulationState";
-import { Square } from "./square";
+import { Square } from "./Square";
 
 export class TerrainPiece {
 

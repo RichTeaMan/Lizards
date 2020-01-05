@@ -1,4 +1,4 @@
-import { Producer } from "../messageBus/producer";
+import { Producer } from "../messageBus/Producer";
 
 export interface WeaponChoice {
     name: string;

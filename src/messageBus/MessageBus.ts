@@ -1,7 +1,7 @@
-import { Producer } from "./producer";
+import { Producer } from "./Producer";
 import { SimulationState } from "../game/SimulationState";
-import { Message } from "./message";
-import { Consumer } from "./consumer";
+import { Message } from "./Message";
+import { Consumer } from "./Consumer";
 import { KeyEvent } from "./KeyEvent";
 import { PointerState } from "./PointerState";
 import { MessagePayload } from "./MessagePayload";

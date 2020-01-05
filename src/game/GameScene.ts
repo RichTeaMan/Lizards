@@ -5,7 +5,7 @@ import { Team } from "../Team";
 import { Combatant } from "../Combatant";
 import { KeyEvent, State } from "../messageBus/KeyEvent";
 import { PointerState } from "../messageBus/PointerState";
-import { MessageBus } from "../messageBus/messageBus";
+import { MessageBus } from "../messageBus/MessageBus";
 import { SineWaveTerrainGenerator } from "../terrainGeneration/SineWaveTerrainGenerator";
 import { EndTurnMessagePayload } from "../endTurn/EndTurnMessagePayload";
 

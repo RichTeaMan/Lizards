@@ -1,6 +1,6 @@
 import { SimulationState } from "../game/SimulationState";
-import { Consumer } from "../messageBus/consumer";
-import { MobilityPayload } from "./mobilityPayload";
+import { Consumer } from "../messageBus/Consumer";
+import { MobilityPayload } from "./MobilityPayload";
 
 export class WalkConsumer implements Consumer<MobilityPayload> {
     

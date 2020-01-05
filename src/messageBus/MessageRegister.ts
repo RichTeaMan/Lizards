@@ -1,5 +1,5 @@
 import { MessagePayload } from "./MessagePayload";
-import { Producer } from "./producer";
+import { Producer } from "./Producer";
 
 export interface MessageRegister {
 

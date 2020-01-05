@@ -1,9 +1,9 @@
-import { TerrainPiece } from "./terrainPiece";
+import { TerrainPiece } from "./TerrainPiece";
 import { Combatant } from "../Combatant";
 import { Projectile } from "../Projectile";
 import { MessageRegister } from "../messageBus/MessageRegister";
 import { Team } from "../Team";
-import { MessageBus } from "../messageBus/messageBus";
+import { MessageBus } from "../messageBus/MessageBus";
 import { UiScene } from "./UiScene";
 import { GameScene } from "./GameScene";
 import { WeaponChoice } from "../ui/WeaponChoice";

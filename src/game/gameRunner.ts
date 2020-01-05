@@ -1,12 +1,12 @@
 import * as Phaser from 'phaser';
 import { SimulationState } from './SimulationState';
-import { MessageBus } from '../messageBus/messageBus';
+import { MessageBus } from '../messageBus/MessageBus';
 import { BazookaConsumer } from '../weapons/bazooka/BazookaConsumer';
 import { ToastConsumer } from '../toast/ToastConsumer';
 import { EndTurnConsumer } from '../endTurn/EndTurnConsumer';
 import { EndTurnMessagePayload } from '../endTurn/EndTurnMessagePayload';
-import { WalkProducer } from '../mobility/walkProducer';
-import { WalkConsumer } from '../mobility/walkConsumer';
+import { WalkProducer } from '../mobility/WalkProducer';
+import { WalkConsumer } from '../mobility/WalkConsumer';
 import { GameScene } from './GameScene';
 import { UiScene } from './UiScene';
 import { ShotgunConsumer } from '../weapons/shotgun/ShotgunConsumer';

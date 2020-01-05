@@ -1,6 +1,6 @@
 import { TerrainGenerator } from "./TerrainGenerator";
 import { SimulationState } from "../game/SimulationState";
-import { TerrainPiece } from "../game/terrainPiece";
+import { TerrainPiece } from "../game/TerrainPiece";
 
 export class SineWaveTerrainGenerator implements TerrainGenerator {
 

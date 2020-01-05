@@ -1,10 +1,10 @@
-import { Consumer } from "../../messageBus/consumer";
+import { Consumer } from "../../messageBus/Consumer";
 import { BazookaPayload } from "./BazookaPayload";
 import { SimulationState } from "../../game/SimulationState";
 import { Projectile } from "../../Projectile";
 import { Combatant } from "../../Combatant";
 import { Explosion } from "../../Explosion";
-import { TerrainPiece } from "../../game/terrainPiece";
+import { TerrainPiece } from "../../game/TerrainPiece";
 
 export class BazookaConsumer implements Consumer<BazookaPayload> {
     fetchMessageType(): string {

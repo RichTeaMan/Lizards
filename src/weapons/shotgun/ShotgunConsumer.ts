@@ -1,9 +1,9 @@
-import { Consumer } from "../../messageBus/consumer";
+import { Consumer } from "../../messageBus/Consumer";
 import { SimulationState } from "../../game/SimulationState";
 import { Projectile } from "../../Projectile";
 import { Combatant } from "../../Combatant";
 import { Explosion } from "../../Explosion";
-import { TerrainPiece } from "../../game/terrainPiece";
+import { TerrainPiece } from "../../game/TerrainPiece";
 import { ShotgunPayload } from "./ShotgunPayload";
 
 export class ShotgunConsumer implements Consumer<ShotgunPayload> {

@@ -1,8 +1,8 @@
-import { Producer } from "../messageBus/producer";
+import { Producer } from "../messageBus/Producer";
 import { SimulationState } from "../game/SimulationState";
-import { MobilityPayload } from "./mobilityPayload";
 import { KeyEvent } from "../messageBus/KeyEvent";
 import { MessagePayload } from "../messageBus/MessagePayload";
+import { MobilityPayload } from "./MobilityPayload";
 
 export class WalkProducer implements Producer {
 

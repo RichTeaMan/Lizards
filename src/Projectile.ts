@@ -1,6 +1,6 @@
 import { Combatant } from "./Combatant";
 import { SimulationState } from "./game/SimulationState";
-import { TerrainPiece } from "./game/terrainPiece";
+import { TerrainPiece } from "./game/TerrainPiece";
 
 export class Projectile {
 
