@@ -5,8 +5,10 @@ import { KeyEvent, State } from "../messageBus/KeyEvent";
 import { PointerState } from "../messageBus/PointerState";
 import { MessagePayload } from "../messageBus/MessagePayload";
 import { EndTurnMessagePayload } from "../endTurn/EndTurnMessagePayload";
+import { WeaponChoice } from "../ui/WeaponChoice";
 
-export class BazookaProducer implements Producer {
+export class BazookaProducer implements Producer, WeaponChoice {
+
     fetchMessageType(): string {
         return "bazooka";
     }
@@ -44,6 +46,18 @@ export class BazookaProducer implements Producer {
             payloads.push(new EndTurnMessagePayload());
         }
         return payloads;
+    }
+
+    get name(): string {
+        return "Bazooka";
+    }
+
+    get description(): string {
+        return "Bazzooks stuff.";
+    }
+
+    get weaponProducer(): Producer {
+        return this;
     }
 
 }

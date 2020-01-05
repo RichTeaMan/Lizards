@@ -32,7 +32,7 @@ export function setupGame(): Phaser.Game {
 
     const messageBus = SimulationState.current().messageRegister as MessageBus;
     messageBus.registerProducer(new WalkProducer())
-        .registerProducer(new BazookaProducer())
+        .registerWeaponProducer(new BazookaProducer())
         .registerConsumer(new WalkConsumer())
         .registerConsumer(new BazookaConsumer())
         .registerConsumer(new ToastConsumer())

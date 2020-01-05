@@ -9,10 +9,15 @@ import { MessageRegister } from "./MessageRegister";
 
 export class MessageBus implements MessageRegister {
 
-
+    private selectedWeaponProducer: Producer = null;
     private producers: Array<Producer> = [];
     private consumers: Record<string, Consumer<unknown>> = {};
     private messages: Array<Message<MessagePayload>> = [];
+
+    registerWeaponProducer(producer: Producer): MessageBus {
+        this.selectedWeaponProducer = producer;
+        return this;
+    }
 
     registerProducer(producer: Producer): MessageBus {
 
@@ -35,6 +40,20 @@ export class MessageBus implements MessageRegister {
         keyEvents: KeyEvent[],
         cursors: Phaser.Types.Input.Keyboard.CursorKeys,
         pointerState: PointerState): MessageBus {
+
+        if (this.selectedWeaponProducer) {
+            try {
+                const payloads = this.selectedWeaponProducer.produce(simulationScene, keyEvents, cursors, pointerState);
+                if (payloads) {
+                    payloads.forEach(p => {
+                        this.registerMessage(p);
+                    });
+                }
+            }
+            catch (error) {
+                console.log(`Unable to process selected weapon producer: ${error}.`);
+            }
+        }
 
         this.producers.forEach(producer => {
             try {
