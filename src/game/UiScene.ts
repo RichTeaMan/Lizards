@@ -1,10 +1,12 @@
 import { SimulationState } from "./SimulationState";
 import { WeaponChoiceScreen } from "../ui/WeaponChoiceScreen";
 import { BazookaProducer } from "../weapons/bazooka/BazookaProducer";
+import { ShotgunProducer } from "../weapons/shotgun/ShotgunProducer";
 
 export class UiScene extends Phaser.Scene {
 
-    private weaponChoiceScreen: WeaponChoiceScreen;
+    private weaponChoiceScreen: WeaponChoiceScreen = null;
+    private selectedWeaponText: Phaser.GameObjects.Text = null;
 
     constructor() {
         super({ key: 'UIScene', active: true });
@@ -12,11 +14,18 @@ export class UiScene extends Phaser.Scene {
 
     public preload() {
         SimulationState.current().uiScene = this;
+        this.selectedWeaponText = this.add.text(20, this.cameras.main.height - 60, "");
 
     }
 
     public create() {
-        this.weaponChoiceScreen = new WeaponChoiceScreen().initialise(this, [new BazookaProducer()]);
+        const weaponChoices = [new BazookaProducer(), new ShotgunProducer()];
+        this.weaponChoiceScreen = new WeaponChoiceScreen().initialise(this, weaponChoices);
+        SimulationState.current().updateSelectedWeapon(weaponChoices[0]);
+
+        this.updateSelectedWeaponRender();
+        this.weaponChoiceScreen.visible(false);
+
         const uiScene = this;
         this.input.keyboard.on('keydown', function (event: KeyboardEvent) {
             if (event.code === "Tab") {
@@ -28,6 +37,10 @@ export class UiScene extends Phaser.Scene {
 
     public render(scene: Phaser.Scene) {
 
+    }
+
+    public updateSelectedWeaponRender() {
+        this.selectedWeaponText.text = `Selected weapon: ${SimulationState.current().selectedWeapon.name}`;
     }
 
     /**

@@ -6,6 +6,7 @@ import { Team } from "../Team";
 import { MessageBus } from "../messageBus/messageBus";
 import { UiScene } from "./UiScene";
 import { GameScene } from "./GameScene";
+import { WeaponChoice } from "../ui/WeaponChoice";
 
 export class SimulationState {
 
@@ -15,6 +16,11 @@ export class SimulationState {
             SimulationState._current = new SimulationState(new MessageBus());
         }
         return SimulationState._current;
+    }
+
+    private _selectedWeapon: WeaponChoice;
+    public get selectedWeapon() :WeaponChoice {
+        return this._selectedWeapon;
     }
     
     public gameScene: GameScene;
@@ -35,6 +41,11 @@ export class SimulationState {
 
     constructor(messageRegister: MessageRegister) {
         this.messageRegister = messageRegister;
+    }
+
+    public updateSelectedWeapon(selectedWeapon: WeaponChoice) {
+        this._selectedWeapon = selectedWeapon;
+        this.messageRegister.changeWeaponProducer(selectedWeapon.weaponProducer);
     }
 
     /**

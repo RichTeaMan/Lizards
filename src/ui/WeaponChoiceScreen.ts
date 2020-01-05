@@ -1,5 +1,6 @@
 import { WeaponChoice } from "./WeaponChoice";
 import { UiScene } from "../game/UiScene";
+import { SimulationState } from "../game/SimulationState";
 
 export class WeaponChoiceScreen {
 
@@ -75,8 +76,11 @@ class WeaponChoiceRow {
         rowRectangle.on('pointerdown', function (pointer: Phaser.Input.Pointer) {
 
             if (pointer && pointer.leftButtonDown() && row.rowRectangle.visible) {
-                console.log(row.weaponChoice.name);
+                console.log(`Weapon selected: ${row.weaponChoice.name}`);
                 weaponChoiceScreen.visible(false);
+
+                SimulationState.current().updateSelectedWeapon(weaponChoice);
+                uiScene.updateSelectedWeaponRender();
             }
         });
 

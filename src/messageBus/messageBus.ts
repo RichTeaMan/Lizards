@@ -14,7 +14,7 @@ export class MessageBus implements MessageRegister {
     private consumers: Record<string, Consumer<unknown>> = {};
     private messages: Array<Message<MessagePayload>> = [];
 
-    registerWeaponProducer(producer: Producer): MessageBus {
+    changeWeaponProducer(producer: Producer): MessageBus {
         this.selectedWeaponProducer = producer;
         return this;
     }
@@ -82,7 +82,13 @@ export class MessageBus implements MessageRegister {
 
             if (message) {
                 const consumer = this.consumers[message.getType()];
-                consumer.consume(simulationScene, message.payload);
+                if (consumer) {
+
+                    consumer.consume(simulationScene, message.payload);
+                }
+                else {
+                    console.error(`Consumer for message not found! Message type: ${message.getType()}`);
+                }
             }
         });
         return this;
