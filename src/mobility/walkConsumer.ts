@@ -13,16 +13,16 @@ export class WalkConsumer implements Consumer<MobilityPayload> {
         payload: MobilityPayload): void {
 
         if (payload.left) {
-            simulationScene.selectedLizard.sprite.setVelocityX(-160);
+            simulationScene.selectedLizard.velocityLeft();
         }
         else if (payload.right) {
-            simulationScene.selectedLizard.sprite.setVelocityX(160);
+            simulationScene.selectedLizard.velocityRight();
         }
         else {
-            simulationScene.selectedLizard.sprite.setVelocityX(0);
+            simulationScene.selectedLizard.velocityReset();
         }
         if (payload.jump && simulationScene.selectedLizard.sprite.body.touching.down) {
-            simulationScene.selectedLizard.sprite.setVelocityY(-120);
+            simulationScene.selectedLizard.jump();
         }
     }
 

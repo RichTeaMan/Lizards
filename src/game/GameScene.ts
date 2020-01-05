@@ -61,11 +61,6 @@ export class GameScene extends Phaser.Scene {
         SimulationState.current().lizards.push(new Combatant().initialise(this, 700, 320, team2));
         SimulationState.current().lizards.push(new Combatant().initialise(this, 815, 360, team2));
 
-        SimulationState.current().lizards.forEach(l => {
-            l.sprite.scale = 0.1;
-            l.sprite.setBounce(0.1).setCollideWorldBounds(true);
-        });
-
         SimulationState.current().selectedLizard = SimulationState.current().lizards[0];
 
         new SineWaveTerrainGenerator().generate(SimulationState.current());

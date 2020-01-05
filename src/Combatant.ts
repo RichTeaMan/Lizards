@@ -4,7 +4,7 @@ import { Team } from "./Team";
 
 export class Combatant {
 
-    static names: string[] = [
+    private static names: string[] = [
         "Tom",
         "Jordan",
         "Becky",
@@ -14,29 +14,34 @@ export class Combatant {
         "Dom",
         "Matt"];
 
-    sprite: Phaser.Physics.Arcade.Sprite;
-    name: string;
-    health: number = 100;
-    nameText: Phaser.GameObjects.Text;
-    nameTextOffsetX: number = -10;
-    nameTextOffsetY: number = -55;
-    healthText: Phaser.GameObjects.Text;
-    healthTextOffsetX: number = -10;
-    healthTextOffsetY: number = -40;
-    dead: boolean = false;
-    team: Team;
+    private _sprite: Phaser.Physics.Arcade.Sprite;
+    private _name: string;
+    private health: number = 100;
+    private nameText: Phaser.GameObjects.Text;
+    private nameTextOffsetX: number = -10;
+    private nameTextOffsetY: number = -55;
+    private healthText: Phaser.GameObjects.Text;
+    private healthTextOffsetX: number = -10;
+    private healthTextOffsetY: number = -40;
+    private jumpVelocity = -120;
+    private walkVelocity = 160;
+    private _dead: boolean = false;
+    private _team: Team;
 
-
-    constructor() {
-        this.name = Combatant.names[Math.floor(Math.random() * Combatant.names.length)];
+    public constructor() {
+        this._name = Combatant.names[Math.floor(Math.random() * Combatant.names.length)];
     }
 
-    initialise(scene: Phaser.Scene, x: number, y: number, team: Team): Combatant {
+    public initialise(scene: Phaser.Scene, x: number, y: number, team: Team): Combatant {
 
-        this.team = team;
+        this._team = team;
         team.combatants.push(this);
 
-        this.sprite = scene.physics.add.sprite(x, y, "lizard").setDragX(100);
+        this._sprite = scene.physics.add.sprite(x, y, "lizard")
+            .setDragX(100)
+            .setScale(0.1)
+            .setBounce(0.1)
+            .setCollideWorldBounds(true);
 
         this.nameText = scene.add.text(x, y, this.name);
         this.nameText.setColor(this.team.colour);
@@ -46,13 +51,13 @@ export class Combatant {
         return this;
     }
 
-    update(scene: SimulationState): Combatant {
+    public update(scene: SimulationState): Combatant {
 
         this.nameText.x = this.x + this.nameTextOffsetX;
         this.nameText.y = this.y + this.nameTextOffsetY;
 
         if (this.health < 0 && !this.dead) {
-            this.dead = true;
+            this._dead = true;
             this.healthText.text = "DEAD";
             scene.messageRegister.registerMessage(ToastPayload.createToast(`${this.name} blew up!`));
             this.centerText();
@@ -67,7 +72,7 @@ export class Combatant {
      * Deals the given amount of damage.
      * @param damage 
      */
-    damage(damage: number): Combatant {
+    public damage(damage: number): Combatant {
 
         if (!this.dead) {
             const roundedDamage = Math.ceil(damage);
@@ -78,16 +83,62 @@ export class Combatant {
         return this;
     }
 
+    /**
+     * The combatant will move left.
+     */
+    public velocityLeft(): void {
+        this.sprite.setVelocityX(-this.walkVelocity);
+    }
+
+    /**
+     * The combatant will move right.
+     */
+    public velocityRight(): void {
+        this.sprite.setVelocityX(this.walkVelocity);
+    }
+
+    /**
+     * Resets combatant velocity. This will not affect velocity from gravity.
+     */
+    public velocityReset(): void {
+        this.sprite.setVelocityX(0);
+    }
+
+    /**
+     * The combatant will jump if the combatant is touch the floor. Otherwise no change will happen.
+     */
+    public jump(): void {
+        if (this._sprite.body.touching.down) {
+            this.sprite.setVelocityY(this.jumpVelocity);
+        }
+    }
+
     private centerText() {
         this.nameTextOffsetX = -(this.nameText.displayWidth / 2);
         this.healthTextOffsetX = -(this.healthText.displayWidth / 2);
     }
 
     get x(): number {
-        return this.sprite.x;
+        return this._sprite.x;
     }
 
     get y(): number {
-        return this.sprite.y;
+        return this._sprite.y;
+    }
+
+    get sprite(): Phaser.Physics.Arcade.Sprite {
+        return this._sprite;
+    }
+
+    get name(): string {
+        return this._name;
+    }
+
+    get team(): Team {
+        return this._team;
+    }
+
+    get dead(): boolean {
+        return this._dead;
     }
 }
