@@ -7,6 +7,7 @@ export class UiScene extends Phaser.Scene {
 
     private weaponChoiceScreen: WeaponChoiceScreen = null;
     private selectedWeaponText: Phaser.GameObjects.Text = null;
+    private fpsCountText: Phaser.GameObjects.Text = null;
 
     constructor() {
         super({ key: 'UIScene', active: true });
@@ -15,7 +16,7 @@ export class UiScene extends Phaser.Scene {
     public preload() {
         SimulationState.current().uiScene = this;
         this.selectedWeaponText = this.add.text(20, this.cameras.main.height - 60, "");
-
+        this.fpsCountText = this.add.text(5, 5, "- fps");
     }
 
     public create() {
@@ -50,5 +51,6 @@ export class UiScene extends Phaser.Scene {
      * @param delta The delta time in ms since the last frame. This is a smoothed and capped value based on the FPS rate.
      */
     public update(time: number, delta: number) {
+        this.fpsCountText.text = `${this.game.loop.actualFps.toFixed(2)} fps`;
     }
 }

@@ -16,6 +16,7 @@ export class TerrainPiece {
         this.y = y;
         const sq = this.calculateRenderSquare();
         this.sprite = simulationScene.gameScene.physics.add.sprite(sq.x, sq.y, "foreground");
+        this.sprite.name = "chunk";
         this.sprite.debugShowBody = true;
         this.sprite.width = sq.width;
         this.sprite.height = sq.height;

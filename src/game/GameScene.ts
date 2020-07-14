@@ -25,6 +25,9 @@ export class GameScene extends Phaser.Scene {
     private lastDragPosition = { x: 0, y: 0 };
     private selectedArrowSprite: Phaser.GameObjects.Sprite;
     private selectedArrowOffsetY = -65;
+    private collisionTerrainGroup: Phaser.Physics.Arcade.Group;
+    private lizardGroup: Phaser.Physics.Arcade.Group;
+    private terrainLizardCollider;
 
     constructor() {
         super('GameScene');
@@ -81,7 +84,6 @@ export class GameScene extends Phaser.Scene {
             const projectile = p1 ? p1 : p2;
 
             if (projectile) {
-
                 const l1 = SimulationState.current().fetchCombatant(body);
                 const l2 = SimulationState.current().fetchCombatant(other);
                 const combatant = l1 ? l1 : l2;
@@ -91,7 +93,7 @@ export class GameScene extends Phaser.Scene {
                 }
                 else {
                     const dt1 = SimulationState.current().fetchTerrainFromBody(body);
-                    const dt2 = SimulationState.current().fetchTerrainFromBody(body);
+                    const dt2 = SimulationState.current().fetchTerrainFromBody(other);
                     const destructibleTerrain = dt1 ? dt1 : dt2;
 
                     if (destructibleTerrain) {
@@ -99,7 +101,6 @@ export class GameScene extends Phaser.Scene {
                     }
                 }
             }
-
         });
 
         const gameScene = this;
@@ -143,6 +144,21 @@ export class GameScene extends Phaser.Scene {
 
         });
 
+        this.lizardGroup = this.physics.add.group(SimulationState.current().lizards.map(l => l.sprite));
+
+        const terrain = this.updateBoundaryTerrain();
+        this.physics.add.collider(this.lizardGroup, terrain, null, null, this);
+
+    }
+
+    public updateBoundaryTerrain(): Phaser.Physics.Arcade.Group {
+        if (this.collisionTerrainGroup) {
+            this.collisionTerrainGroup.destroy();
+        }
+        //this.collisionTerrainGroup = this.physics.add.group(SimulationState.current().fetchOutsideTerrain().map(t => t.sprite));
+        this.collisionTerrainGroup = this.physics.add.group(SimulationState.current().destructibleTerrain.map(t => t.sprite));
+        this.collisionTerrainGroup.name = "terrain-group";
+        return this.collisionTerrainGroup;
     }
 
     public render() {
@@ -169,27 +185,12 @@ export class GameScene extends Phaser.Scene {
 
         const scene = this as Phaser.Scene;
 
+        const newCollisionObjects = SimulationState.current().fetchAndFlushCollisionObject();
+        newCollisionObjects.forEach(co => {
+            this.physics.add.collider(co, this.collisionTerrainGroup, null, null, this);
+        });
+
         this.render();
-
-
-        // set collisions - must be done every update
-        this.physics.world.setBoundsCollision(false, false, false, false);
-
-        SimulationState.current().fetchOutsideTerrain().forEach(s => {
-            SimulationState.current().lizards.forEach(l => {
-                scene.physics.world.collide(s.sprite, l.sprite);
-            });
-
-            SimulationState.current().projectiles.forEach(p => {
-                scene.physics.world.collide(s.sprite, p.sprite);
-            });
-        });
-
-        SimulationState.current().lizards.forEach(l => {
-            SimulationState.current().projectiles.forEach(p => {
-                scene.physics.world.collide(l.sprite, p.sprite);
-            });
-        });
 
         // process messages
 

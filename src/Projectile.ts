@@ -16,6 +16,7 @@ export class Projectile {
     initialise(simulationScene: SimulationState, x: number, y: number, velocityX: number, velocityY: number): Projectile {
         this.sprite = simulationScene.gameScene.physics.add.sprite(x, y, "bazookaRocket");
 
+        this.sprite.name = "bullet";
         this.sprite.body.onCollide = true;
         this.sprite.setVelocityX(velocityX);
         this.sprite.setVelocityY(velocityY);

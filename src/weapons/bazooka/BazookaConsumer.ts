@@ -15,6 +15,7 @@ export class BazookaConsumer implements Consumer<BazookaPayload> {
         const projectile = new BazookaProjectile().initialise(simulationScene, payload.originX, payload.originY, payload.velocityX, payload.velocityY);
 
         simulationScene.projectiles.push(projectile);
+        simulationScene.registerCollisionObject(projectile.sprite);
     }
 
 }

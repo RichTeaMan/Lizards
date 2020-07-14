@@ -15,6 +15,8 @@ export class SimulationState {
      */
     public turnCount: number = 0;
 
+    private pendingCollisionObjects: (Phaser.Physics.Arcade.Sprite | Phaser.Physics.Arcade.Group)[] = [];
+
     private static _current: SimulationState = null;
     public static current(): SimulationState {
         if (!SimulationState._current) {
@@ -33,7 +35,7 @@ export class SimulationState {
 
     // if the scene gets only slightly larger than this then collision detection stops working. not sure why yet.
     private _height = 100;
-    private _width = 150;
+    private _width = 500;
 
     destructibleTerrain: TerrainPiece[] = [];
     private cachedOutsideTerrain: TerrainPiece[] = null;
@@ -135,6 +137,16 @@ export class SimulationState {
         return destructibleTerrain;
     }
 
+    public registerCollisionObject(object: Phaser.Physics.Arcade.Group | Phaser.Physics.Arcade.Sprite) {
+        this.pendingCollisionObjects.push(object);
+    }
+
+    public fetchAndFlushCollisionObject(): (Phaser.Physics.Arcade.Group | Phaser.Physics.Arcade.Sprite)[] {
+        const pendingObjects = this.pendingCollisionObjects;
+        this.pendingCollisionObjects = [];
+        return pendingObjects;
+    }
+
     public update() {
         // TODO
     }
@@ -172,6 +184,7 @@ export class SimulationState {
 
         const notDestroyed = this.destructibleTerrain.filter(dt => !dt.destroyed);
         if (this.cachedOutsideTerrain === null || notDestroyed.length !== this.cachedNotDestroyedTerrainCount) {
+            console.log("working terrain");
 
             const outsideTerrain: TerrainPiece[] = [];
 
@@ -204,8 +217,6 @@ export class SimulationState {
                     outsideTerrain.push(dt);
                     return;
                 }
-
-
             });
             this.cachedOutsideTerrain = outsideTerrain;
             this.cachedNotDestroyedTerrainCount = notDestroyed.length;

@@ -18,6 +18,7 @@ export class ShotgunConsumer implements Consumer<ShotgunPayload> {
         const projectile = new ShotgunProjectile().initialise(simulationScene, payload.originX, payload.originY, payload.velocityX, payload.velocityY);
 
         simulationScene.projectiles.push(projectile);
+        simulationScene.registerCollisionObject(projectile.sprite);
     }
 
 }
