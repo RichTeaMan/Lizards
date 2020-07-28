@@ -50,7 +50,7 @@ export class GameScene extends Phaser.Scene {
         //const config = new Phaser.Loader.FileTypes.SpriteSheetFile();
         //Phaser.Loader.F
 
-        this.load.spritesheet('fg-frame', 'assets/slice33_33.png', { frameWidth: 10, frameHeight: 10 });
+        this.load.spritesheet('fg-frame', 'assets/slice33_33.png', { frameWidth: SimulationState.current().terrainPieceSize, frameHeight: SimulationState.current().terrainPieceSize });
     }
 
     public create() {
@@ -154,22 +154,6 @@ export class GameScene extends Phaser.Scene {
 
         const terrain = this.updateBoundaryTerrain();
         this.physics.add.collider(this.lizardGroup, terrain, null, null, this);
-
-
-
-        const d = this.physics.add.sprite(40, 40, "fg-frame", 1);
-        d.body.immovable = true;
-        (d.body as any).allowGravity = false;
-
-        const d2 = this.physics.add.sprite(80, 40, "fg", 1);
-        d2.body.immovable = true;
-        (d2.body as any).allowGravity = false;
-
-        for (let i = 0; i < 100; i++) {
-            const temp = this.physics.add.sprite(40 + (i * 20), 80, "fg-frame", i);
-            temp.body.immovable = true;
-            (temp.body as any).allowGravity = false;
-        }
     }
 
     public updateBoundaryTerrain(): Phaser.Physics.Arcade.Group {

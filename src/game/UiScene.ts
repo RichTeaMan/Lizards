@@ -51,6 +51,6 @@ export class UiScene extends Phaser.Scene {
      * @param delta The delta time in ms since the last frame. This is a smoothed and capped value based on the FPS rate.
      */
     public update(time: number, delta: number) {
-        this.fpsCountText.text = `${this.game.loop.actualFps.toFixed(2)} fps`;
+        this.fpsCountText.text = `${this.game.loop.actualFps.toFixed(2)} fps | ${SimulationState.current().destructibleTerrain.length} terrain pieces.`;
     }
 }

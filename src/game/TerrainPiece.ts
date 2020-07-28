@@ -16,9 +16,10 @@ export class TerrainPiece {
         this.y = y;
         const sq = this.calculateRenderSquare();
 
-        const xFrame = x % 7;
-        const yFrame = y % 7;
-        const frame = yFrame * 7 + xFrame;
+        const mod = 70 / simulationScene.terrainPieceSize;
+        const xFrame = x % mod;
+        const yFrame = y % mod;
+        const frame = yFrame * mod + xFrame;
 
         this.sprite = simulationScene.gameScene.physics.add.sprite(sq.x, sq.y, "fg-frame", frame);
         //this.sprite = simulationScene.gameScene.physics.add.sprite(sq.x, sq.y, "x", "1");
